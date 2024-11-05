@@ -1,7 +1,7 @@
 # ePIC_TDR_DVCS
 This repository contains the analysis and plotting code for the ePIC DVCS analysis (done as part of the Exclusive, Diffractive and Tagging PWG).
 
-In order to run the analysis, one must provide a list of input files for the main analysis code (`DVCS_TDR.cxx`) to run over. The list provided in this repository points to the output of the ePIC simulation campaign for September 2024, using the 10x100 beam energy.
+In order to run the analysis, one must provide a list of input files for the main analysis code (`DVCS_TDR.cxx`) to run over. The list provided in this repository points to the output of the ePIC simulation campaign for October 2024 (listed as the campaign to be used for the TDR physics simulation plots), using the 10x100 beam energy.
 
 The scripts provided in this repository **must** be run within the [`eic-shell`](https://github.com/eic/eic-shell) environment, using the ROOT analysis framework. The syntax for running the analysis code is as follows:
 ```
