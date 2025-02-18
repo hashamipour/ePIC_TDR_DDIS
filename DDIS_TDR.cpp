@@ -35,11 +35,11 @@ MomVector vBoostToCoM;
 MomVector vBoostToHoF;
 
 void DDIS_TDR(TString fileList){
-  std::cout<<"----------------------------"<<std::endl;
-  std::cout<<"                            "<<std::endl;
-  std::cout<<"     ePIC DVCS analysis     "<<std::endl;
-  std::cout<<"                            "<<std::endl;
-  std::cout<<"----------------------------"<<std::endl;
+  std::cout<<" __ __ __ __ __ __ __ __ __ __"<<std::endl;
+  std::cout<<"|                             |"<<std::endl;
+  std::cout<<"|     ePIC DDIS analysis      |"<<std::endl;
+  // std::cout<<"|                             |"<<std::endl;
+  std::cout<<"|__ __ __ __ __ __ __ __ __ __|"<<std::endl;
   std::cout<<"\nInput filelist: "<<fileList<<std::endl;
 
   ifstream fileListStream;
