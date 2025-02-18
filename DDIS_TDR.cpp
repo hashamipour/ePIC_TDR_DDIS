@@ -1,4 +1,4 @@
-using namespace std;
+// using namespace std;
 
 using ROOT::Math::VectorUtil::boost;
 using ROOT::Math::VectorUtil::Angle;
@@ -34,13 +34,13 @@ RotationY rotAboutY;
 MomVector vBoostToCoM;
 MomVector vBoostToHoF;
 
-void DVCS_TDR(TString fileList){
-  cout<<"----------------------------"<<endl;
-  cout<<"                            "<<endl;
-  cout<<"     ePIC DVCS analysis     "<<endl;
-  cout<<"                            "<<endl;
-  cout<<"----------------------------"<<endl;
-  cout<<"\nInput filelist: "<<fileList<<endl;
+void DDIS_TDR(TString fileList){
+  std::cout<<"----------------------------"<<std::endl;
+  std::cout<<"                            "<<std::endl;
+  std::cout<<"     ePIC DVCS analysis     "<<std::endl;
+  std::cout<<"                            "<<std::endl;
+  std::cout<<"----------------------------"<<std::endl;
+  std::cout<<"\nInput filelist: "<<fileList<<std::endl;
 
   ifstream fileListStream;
   fileListStream.open(fileList);
@@ -58,25 +58,29 @@ void DVCS_TDR(TString fileList){
 
     nFiles++;
   }
-  cout<<"\nNo. of files: "<<nFiles<<"; no. of events: "<<events->GetEntries()<<endl;
+  std::cout<<"\nNo. of files: "<<nFiles<<"; no. of events: "<<events->GetEntries()<<std::endl;
   
   //---------------------------------------------------------
   // DECLARE OUTPUT HISTOGRAMS
   //---------------------------------------------------------
   // Pseudorapidity distributions
-  TH1D* h_eta_MCe   = new TH1D("eta_MCe",";#eta_{e'}(MC)", 275, -11.0, 11.0);
-  TH1D* h_eta_RPe   = new TH1D("eta_RPe",";#eta_{e'}(Reco)", 275, -11.0, 11.0);
-  TH1D* h_eta_MCg   = new TH1D("eta_MCg",";#eta_{#gamma}(MC)", 275, -11.0, 11.0);
-  TH1D* h_eta_RPg   = new TH1D("eta_RPg",";#eta_{#gamma}(Reco)", 275, -11.0, 11.0);
-  TH1D* h_eta_MCp   = new TH1D("eta_MCp",";#eta_{p'}(MC)", 275, -11.0, 11.0);
-  TH1D* h_eta_RPp   = new TH1D("eta_RPp",";#eta_{p'}(Reco)", 275, -11.0, 11.0);
-  TH1D* h_eta_RPPp   = new TH1D("eta_RPPp",";#eta_{p'}(Reco)", 275, -11.0, 11.0);
+
+  // \eta electron
+  TH1D* h_eta_MCe = new TH1D("eta_MCe",";#eta_{e'}(MC)", 275, -11.0, 11.0);
+  TH1D* h_eta_RPe = new TH1D("eta_RPe",";#eta_{e'}(Reco)", 275, -11.0, 11.0);
+  // \eta gamma
+  TH1D* h_eta_MCg = new TH1D("eta_MCg",";#eta_{#gamma}(MC)", 275, -11.0, 11.0);
+  TH1D* h_eta_RPg = new TH1D("eta_RPg",";#eta_{#gamma}(Reco)", 275, -11.0, 11.0);
+  // \eta proton
+  TH1D* h_eta_MCp  = new TH1D("eta_MCp",";#eta_{p'}(MC)", 275, -11.0, 11.0);
+  TH1D* h_eta_RPp  = new TH1D("eta_RPp",";#eta_{p'}(Reco)", 275, -11.0, 11.0);
+  TH1D* h_eta_RPPp = new TH1D("eta_RPPp",";#eta_{p'}(Reco)", 275, -11.0, 11.0);
   // t distributions
-  TH1D* h_t_MC    = new TH1D("t_MC"   , ";|t|(MC) [(GeV/c^{2})^{2}]"  , 100, 0.0, 2.0);
+  TH1D* h_t_MC     = new TH1D("t_MC"   , ";|t|(MC) [(GeV/c^{2})^{2}]"  , 100, 0.0, 2.0);
   TH1D* h_t_RP     = new TH1D("t_RP"    , ";|t|(Reco) [(GeV/c^{2})^{2}]"  , 100, 0.0, 2.0);
   TH1D* h_t_RPP    = new TH1D("t_RPP"   , ";|t|(Reco) [(GeV/c^{2})^{2}]"  , 100, 0.0, 2.0);
   // Photon angluar resolutions
-  TH1D* h_PhotRes_theta = new TH1D("photres_theta",";#theta_{#gamma}(Reco)-#theta_{#gamma}(MC) [rad]",600,-1.5,1.5);
+  TH1D* h_PhotRes_theta   = new TH1D("photres_theta",";#theta_{#gamma}(Reco)-#theta_{#gamma}(MC) [rad]",600,-1.5,1.5);
   TH2D* h_PhotRes2D_theta = new TH2D("photres2d_theta",";#theta_{#gamma, MC} [rad]; #delta#theta_{#gamma}",320,0,3.2,600,-1.5,1.5);
 
   //---------------------------------------------------------
@@ -158,7 +162,7 @@ void DVCS_TDR(TString fileList){
   // Run function to undo effect of afterburner and calculate "postburn" variables
   undoAfterburnAndCalc(beamp4,beame4);
 
-  cout<<"[DEBUG] Found beam energies "<<beame4.E()<<"x"<<beamp4.E()<<" GeV"<<endl;
+  std::cout<<"[DEBUG] Found beam energies "<<beame4.E()<<"x"<<beamp4.E()<<" GeV"<<std::endl;
   /// BEAMS FOUND AND AFTERBURNER REMOVED
 
   // Main run to find particles and fill histograms
@@ -466,49 +470,49 @@ void DVCS_TDR(TString fileList){
   lC1p3->Draw();
 
   // CANVAS 2: T-DISTRIBUTION
-  TCanvas* c2 = new TCanvas("c2","",1200,800);
-  h_t_MC->SetMinimum(1);
-  gPad->SetLogy(1);
-  h_t_MC->GetXaxis()->SetTitle("|t| [GeV^{2}]");
-  h_t_MC->GetYaxis()->SetTitle("Counts / 0.02 GeV^{2}");
-  h_t_MC->SetLineColor(kBlack);
-  h_t_MC->SetLineWidth(2);
-  h_t_MC->Draw();
-  h_t_RP->SetLineColor(kBlue);
-  h_t_RP->SetMarkerColor(kBlue);
-  h_t_RP->SetMarkerStyle(20);
-  h_t_RP->Draw("pesame");
-  h_t_RPP->SetLineColor(kCyan+1);
-  h_t_RPP->SetMarkerColor(kCyan+1);
-  h_t_RPP->SetMarkerStyle(20);
-  h_t_RPP->Draw("pesame");
-  // Create header text objects
-  TLatex* tHead1 = new TLatex(0.10, 0.91, sHead1);
-  tHead1->SetNDC();
-  tHead1->SetTextSize(30);
-  tHead1->SetTextFont(43);
-  tHead1->SetTextColor(kBlack);
-  TLatex* tHead2 = new TLatex(0.74, 0.91, sHead2);
-  tHead2->SetNDC();
-  tHead2->SetTextSize(30);
-  tHead2->SetTextFont(43);
-  tHead2->SetTextColor(kBlack);
-  tHead1->Draw("same");
-  tHead2->Draw("same");
-  // Add legend
-  TLatex* tC2 = new TLatex(0.58, 0.83, "#splitline{#bf{EpIC} ep #rightarrow e'p'#gamma, Q^{2} #geq 1 GeV^{2}}{t_{RP} #leq 0.3 GeV^{2}, M_{miss}^{2} < 1 GeV^{2}}");
-  tC2->SetNDC();
-  tC2->SetTextSize(30);
-  tC2->SetTextFont(43);
-  tC2->SetTextColor(kBlack);
-  tC2->Draw("same");
-  TLegend* lC2 = new TLegend(0.57, 0.6, 0.8, 0.77);
-  lC2->SetLineColorAlpha(kWhite,0);
-  lC2->SetFillColorAlpha(kWhite,0);
-  lC2->AddEntry(h_t_MC, "#bf{EpIC} MC gen.", "l");
-  lC2->AddEntry(h_t_RP, "Reco. B0", "lp");
-  lC2->AddEntry(h_t_RPP, "Reco. RP", "lp");
-  lC2->Draw();
+  // TCanvas* c2 = new TCanvas("c2","",1200,800);
+  // h_t_MC->SetMinimum(1);
+  // gPad->SetLogy(1);
+  // h_t_MC->GetXaxis()->SetTitle("|t| [GeV^{2}]");
+  // h_t_MC->GetYaxis()->SetTitle("Counts / 0.02 GeV^{2}");
+  // h_t_MC->SetLineColor(kBlack);
+  // h_t_MC->SetLineWidth(2);
+  // h_t_MC->Draw();
+  // h_t_RP->SetLineColor(kBlue);
+  // h_t_RP->SetMarkerColor(kBlue);
+  // h_t_RP->SetMarkerStyle(20);
+  // h_t_RP->Draw("pesame");
+  // h_t_RPP->SetLineColor(kCyan+1);
+  // h_t_RPP->SetMarkerColor(kCyan+1);
+  // h_t_RPP->SetMarkerStyle(20);
+  // h_t_RPP->Draw("pesame");
+  // // Create header text objects
+  // TLatex* tHead1 = new TLatex(0.10, 0.91, sHead1);
+  // tHead1->SetNDC();
+  // tHead1->SetTextSize(30);
+  // tHead1->SetTextFont(43);
+  // tHead1->SetTextColor(kBlack);
+  // TLatex* tHead2 = new TLatex(0.74, 0.91, sHead2);
+  // tHead2->SetNDC();
+  // tHead2->SetTextSize(30);
+  // tHead2->SetTextFont(43);
+  // tHead2->SetTextColor(kBlack);
+  // tHead1->Draw("same");
+  // tHead2->Draw("same");
+  // // Add legend
+  // TLatex* tC2 = new TLatex(0.58, 0.83, "#splitline{#bf{EpIC} ep #rightarrow e'p'#gamma, Q^{2} #geq 1 GeV^{2}}{t_{RP} #leq 0.3 GeV^{2}, M_{miss}^{2} < 1 GeV^{2}}");
+  // tC2->SetNDC();
+  // tC2->SetTextSize(30);
+  // tC2->SetTextFont(43);
+  // tC2->SetTextColor(kBlack);
+  // tC2->Draw("same");
+  // TLegend* lC2 = new TLegend(0.57, 0.6, 0.8, 0.77);
+  // lC2->SetLineColorAlpha(kWhite,0);
+  // lC2->SetFillColorAlpha(kWhite,0);
+  // lC2->AddEntry(h_t_MC, "#bf{EpIC} MC gen.", "l");
+  // lC2->AddEntry(h_t_RP, "Reco. B0", "lp");
+  // lC2->AddEntry(h_t_RPP, "Reco. RP", "lp");
+  // lC2->Draw();
 
   // CANVAS 3A: PHOTON ANGLE RESOLUTION (INSET)
   TCanvas* c3 = new TCanvas("c3","",1200,800);
@@ -535,7 +539,7 @@ void DVCS_TDR(TString fileList){
   tHeadLc3->SetTextFont(43);
   tHeadLc3->SetTextColor(kBlack);
   tHeadLc3->Draw("same");
-  tHead2->Draw("same");
+  //tHead2->Draw("same");
   p3->cd();
   h_PhotRes2D_theta->RebinX(2);
   h_PhotRes2D_theta->RebinY(8);
@@ -553,15 +557,18 @@ void DVCS_TDR(TString fileList){
   //---------------------------------------------------------
   // SAVE CANVASES AS PNGs AND CLOSE
   //---------------------------------------------------------
-  c1->SaveAs("figs/DVCS_eta.png");
+  c1->SaveAs("figs/DDIS_eta.png");
   c1->Close();
-  c2->SaveAs("figs/DVCS_t.png");
-  c2->Close();
-  c3->SaveAs("figs/DVCS_photres.png");
+  // c2->SaveAs("figs/DDIS_t.png");
+  // c2->Close();
+  c3->SaveAs("figs/DDIS_photres.png");
   c3->Close();
 
   return;
 }
+
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 
 // Calculate t from beam and scattered proton vectors
 // t = (p' - p)^2
@@ -571,6 +578,9 @@ Double_t calcT(P3MVector p, P3MVector pprime){
   return TMath::Abs(t);
 }
 
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
 // Calculate Q2 from beam and scattered electron vectors
 // Q2 = (k - k')^2
 Double_t calcQ2(P3MVector k, P3MVector kprime){
@@ -579,6 +589,9 @@ Double_t calcQ2(P3MVector k, P3MVector kprime){
 
   return Q2;
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
 
 // Calculate Bjorken x from both beam vectors and scattered electron vector
 // xB = Q2 / 2(q.p)
@@ -592,6 +605,9 @@ Double_t calcBjorkenX(P3MVector k, P3MVector kprime, P3MVector p){
   return xB;
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+
 // Calculation of missing mass (squared) for fully exclusive e'p'g final state
 Double_t calcM2Miss_3Body(P3MVector a, P3MVector b, P3MVector c, P3MVector d, P3MVector f){
   Float_t fEMiss = (a+b-c-d-f).E();
@@ -600,6 +616,11 @@ Double_t calcM2Miss_3Body(P3MVector a, P3MVector b, P3MVector c, P3MVector d, P3
   Float_t fM2Miss = TMath::Power(fEMiss,2) - TMath::Power(fPMiss,2);
   return fM2Miss;
 }
+
+
+
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
 // Undo AB and calculate boost vectors - DO THIS FIRST FOR EACH EVENT
 // USE BEAM VECTORS
@@ -641,6 +662,10 @@ void undoAfterburnAndCalc(P3MVector& p, P3MVector& k){
   p.SetPxPyPzE(p_beam.X(), p_beam.Y(), p_beam.Z(), p_beam.E());
   k.SetPxPyPzE(e_beam.X(), e_beam.Y(), e_beam.Z(), e_beam.E());
 }
+
+
+/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 
 // Undo afterburn procedure only
 void undoAfterburn(P3MVector& a){
