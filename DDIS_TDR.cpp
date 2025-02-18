@@ -175,7 +175,7 @@ void DDIS_TDR(TString fileList){
 
     // 4-vectors for associated MC particles (ONLY SCATTERED - only need photon for resolution plot)
     vector<P3MVector> scatg4_aso;   // Scattered photon   (associated MC)
-    
+
     // 4-vectors for reconstructed particles (SEPARATE PROTONS FOR B0 AND ROMAN POTS)
     vector<P3MVector> scate4_rec;   // Scattered electron (reconstructed)
     vector<P3MVector> scatp4_rec;   // Scattered proton   (B0 reconstructed)
@@ -189,11 +189,11 @@ void DDIS_TDR(TString fileList){
     // Fill particle holding arrays
     //---------------------------------------------------------
     // 1. MC generated
-    for(int imc=0;imc<mc_px_array.GetSize();imc++){
+    for(int imc=0; imc < mc_px_array.GetSize(); imc++){
       mctrk.SetXYZ(mc_px_array[imc], mc_py_array[imc], mc_pz_array[imc]);
       P3MVector q_scat(mctrk.X(),mctrk.Y(),mctrk.Z(),mc_mass_array[imc]);
       
-      // Undo afterburner
+      // Undo AfterBurner
       undoAfterburn(q_scat);
 	
       // Look for scattered particles ==> Generator status 1
@@ -206,9 +206,10 @@ void DDIS_TDR(TString fileList){
       
     // 2. and 3. Associated MC tracks and their matched reconstucted tracks
     // USING EXPLICIT MATCHING BETWEEN RECO AND GENERATED TRACKS 
+
     unsigned int mc_assoc_index = -1;
     // LOOK FOR ELECTRONS AND PHOTONS (using ReconstructedParticleAssociations)
-    for(unsigned int iAssoc{0};iAssoc<assoc_rec_id.GetSize();iAssoc++){
+    for(unsigned int iAssoc{0}; iAssoc < assoc_rec_id.GetSize(); iAssoc++){
       mc_assoc_index = assoc_sim_id[iAssoc];
 	
       // If reco track isn't associated to an MC track, then skip
@@ -234,13 +235,13 @@ void DDIS_TDR(TString fileList){
     
     mc_assoc_index=-1; // Reset association index
     // THEN LOOK FOR PROTONS (using ReconstructedTruthSeededChargedParticleAssociations)
-    for(unsigned int iTSAssoc{0};iTSAssoc<tsassoc_rec_id.GetSize();iTSAssoc++){
+    for(unsigned int iTSAssoc{0}; iTSAssoc < tsassoc_rec_id.GetSize(); iTSAssoc++){
       mc_assoc_index = tsassoc_sim_id[iTSAssoc];
 	
       // Only care about protons here (PID 2212)
       if(mc_assoc_index != -1 && mc_genStatus_array[mc_assoc_index] == 1 && mc_pdg_array[mc_assoc_index] == 2212){
 	      recotrk.SetXYZ(tsre_px_array[iTSAssoc], tsre_py_array[iTSAssoc], tsre_pz_array[iTSAssoc]);
-	      P3MVector q_reco(recotrk.X(),recotrk.Y(),recotrk.Z(),mc_mass_array[mc_assoc_index]);
+	      P3MVector q_reco(recotrk.X(), recotrk.Y(), recotrk.Z(), mc_mass_array[mc_assoc_index]);
 	      undoAfterburn(q_reco);
 	      scatp4_rec.push_back(q_reco); 
       }
@@ -250,7 +251,6 @@ void DDIS_TDR(TString fileList){
     // NO NEED TO UNDO AFTERBURNER FOR FF DETECTORS - NOT APPLIED IN FIRST PLACE
     for(int irpreco{0}; irpreco<rp_px_array.GetSize(); irpreco++){
       recotrk.SetXYZ(rp_px_array[irpreco], rp_py_array[irpreco], rp_pz_array[irpreco]);	
-      
       P3MVector q_rpreco(recotrk.X(),recotrk.Y(),recotrk.Z(),rp_mass_array[irpreco]);
       if(rp_pdg_array[irpreco] == 2212){
 	      scatp4_rom.push_back(q_rpreco);
@@ -279,7 +279,7 @@ void DDIS_TDR(TString fileList){
 	        // Need to calculate kinematics before cutting on them
 	        Float_t fM2miss = calcM2Miss_3Body(beame4, beamp4, scate4_gen[0], scatp4_gen[0], scatg4_gen[0]);
 	        Float_t ft = calcT(beamp4, scatp4_gen[0]);
-          std:: cout << "[DEBUG]: 279: " << ft << std::endl;
+          std:: cout <<  std::setw(21)  << "[DEBUG] MC level 't': " << ft << std::endl;
 	    
 	        // Want MM2 to be close to zero
 	        if(TMath::Abs(fM2miss) < 1) h_t_MC->Fill(ft);
@@ -297,20 +297,22 @@ void DDIS_TDR(TString fileList){
       if(scate4_rec.size() == 1) h_eta_RPe->Fill(scate4_rec[0].Eta());
       // gamma
       if(scatg4_rec.size() == 1) h_eta_RPg->Fill(scatg4_rec[0].Eta());
+
       // p' (B0 - theta between 5.5 and 20 mrad)
-      if(scatp4_rec.size() == 1 && scatp4_rec[0].Theta()>0.0055 && scatp4_rec[0].Theta()<0.02){
+      if(scatp4_rec.size() == 1 && scatp4_rec[0].Theta() > 0.0055 && scatp4_rec[0].Theta() < 0.02){
 	      h_eta_RPp->Fill(scatp4_rec[0].Eta());
 	      // Add exclusivity cuts for t-distribution
 	      if(scate4_rec.size() == 1 && scatg4_rec.size() == 1){
 	        // Need to calculate kinematics before cutting on them
 	        Float_t fM2miss = calcM2Miss_3Body(beame4, beamp4, scate4_rec[0], scatp4_rec[0], scatg4_rec[0]);
 	        Float_t ft = calcT(beamp4, scatp4_rec[0]);
-          std:: cout << "[DEBUG]: 304: " << ft << std::endl;
+          std:: cout << std::left << std::setw(22)  << "[DEBUG] B0 't': " << ft << std::endl;
 	    
 	        // Want MM2 to be close to zero
 	        if(TMath::Abs(fM2miss) < 1) h_t_RP->Fill(ft);
 	      } // Exclusivity required
       } // B0 Proton tracks found
+
       // p' (RP - theta less than 5 mrad)
       if(scatp4_rom.size() == 1 && scatp4_rom[0].Theta()<0.005){
 	      h_eta_RPPp->Fill(scatp4_rom[0].Eta());
@@ -319,7 +321,7 @@ void DDIS_TDR(TString fileList){
 	        // Need to calculate kinematics before cutting on them
 	        Float_t fM2miss = calcM2Miss_3Body(beame4, beamp4, scate4_rec[0], scatp4_rom[0], scatg4_rec[0]);
 	        Float_t ft = calcT(beamp4, scatp4_rom[0]);
-          std:: cout << "[DEBUG]: 317: " << ft << std::endl;
+          std:: cout <<  std::setw(21) << "[DEBUG] RomanPot 't': " << ft << std::endl;
 	    
 	        // Want MM2 to be close to zero
 	        if(TMath::Abs(fM2miss) < 1 && ft < 0.3) h_t_RPP->Fill(ft);
