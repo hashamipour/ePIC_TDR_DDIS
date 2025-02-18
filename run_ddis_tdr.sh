@@ -16,5 +16,5 @@ root -b -q "./DDIS_TDR.cpp(\"${list_file}\")"
 # ./myprogram "$rec_file" "$outputfile"
 
 # Optional: Print the filenames for confirmation (good for debugging)
-#echo "Reconstructed file: $rec_file"
-#echo "Output file: $outputfile"
+echo "Analyzed file: $rec_file"
+
