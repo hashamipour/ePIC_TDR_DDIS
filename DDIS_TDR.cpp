@@ -35,12 +35,11 @@ MomVector vBoostToCoM;
 MomVector vBoostToHoF;
 
 void DDIS_TDR(TString fileList){
-  std::cout<<" __ __ __ __ __ __ __ __ __ __"<<std::endl;
-  std::cout<<"|                             |"<<std::endl;
-  std::cout<<"|     ePIC DDIS analysis      |"<<std::endl;
-  // std::cout<<"|                             |"<<std::endl;
-  std::cout<<"|__ __ __ __ __ __ __ __ __ __|"<<std::endl;
-  std::cout<<"\nInput filelist: "<<fileList<<std::endl;
+  std::cout<< " __ __ __ __ __ __ __ __ __ __" <<std::endl;
+  std::cout<< "|                             |"<<std::endl;
+  std::cout<< "|     ePIC DDIS analysis      |"<<std::endl;
+  std::cout<< "|__ __ __ __ __ __ __ __ __ __|"<<std::endl;
+  std::cout<< "\nInput filelist: " << fileList <<std::endl;
 
   ifstream fileListStream;
   fileListStream.open(fileList);
@@ -88,39 +87,39 @@ void DDIS_TDR(TString fileList){
   //---------------------------------------------------------
   TTreeReader tree_reader(events);
   // MC particles
-  TTreeReaderArray<float>  mc_px_array        = {tree_reader, "MCParticles.momentum.x"};
-  TTreeReaderArray<float>  mc_py_array        = {tree_reader, "MCParticles.momentum.y"};
-  TTreeReaderArray<float>  mc_pz_array        = {tree_reader, "MCParticles.momentum.z"};
-  TTreeReaderArray<double> mc_mass_array      = {tree_reader, "MCParticles.mass"};
-  TTreeReaderArray<int>    mc_genStatus_array = {tree_reader, "MCParticles.generatorStatus"};
-  TTreeReaderArray<int>    mc_pdg_array       = {tree_reader, "MCParticles.PDG"};
+  TTreeReaderArray<float>  mc_px_array          = {tree_reader, "MCParticles.momentum.x"};
+  TTreeReaderArray<float>  mc_py_array          = {tree_reader, "MCParticles.momentum.y"};
+  TTreeReaderArray<float>  mc_pz_array          = {tree_reader, "MCParticles.momentum.z"};
+  TTreeReaderArray<double> mc_mass_array        = {tree_reader, "MCParticles.mass"};
+  TTreeReaderArray<int>    mc_genStatus_array   = {tree_reader, "MCParticles.generatorStatus"};
+  TTreeReaderArray<int>    mc_pdg_array         = {tree_reader, "MCParticles.PDG"};
   // Reconstructed/MC particle associations - BARREL (using ReconstructedParticles branch)
-  TTreeReaderArray<unsigned int> assoc_rec_id = {tree_reader, "ReconstructedParticleAssociations.recID"};
-  TTreeReaderArray<unsigned int> assoc_sim_id = {tree_reader, "ReconstructedParticleAssociations.simID"};
+  TTreeReaderArray<unsigned int> assoc_rec_id   = {tree_reader, "ReconstructedParticleAssociations.recID"};
+  TTreeReaderArray<unsigned int> assoc_sim_id   = {tree_reader, "ReconstructedParticleAssociations.simID"};
   // Reconstructed particles - BARREL (using ReconstructedParticles branch)
-  TTreeReaderArray<float>  re_px_array   = {tree_reader, "ReconstructedParticles.momentum.x"};
-  TTreeReaderArray<float>  re_py_array   = {tree_reader, "ReconstructedParticles.momentum.y"};
-  TTreeReaderArray<float>  re_pz_array   = {tree_reader, "ReconstructedParticles.momentum.z"};
-  TTreeReaderArray<float>  re_e_array    = {tree_reader, "ReconstructedParticles.energy"};
-  TTreeReaderArray<int>    re_pdg_array  = {tree_reader, "ReconstructedParticles.PDG"};
+  TTreeReaderArray<float>  re_px_array          = {tree_reader, "ReconstructedParticles.momentum.x"};
+  TTreeReaderArray<float>  re_py_array          = {tree_reader, "ReconstructedParticles.momentum.y"};
+  TTreeReaderArray<float>  re_pz_array          = {tree_reader, "ReconstructedParticles.momentum.z"};
+  TTreeReaderArray<float>  re_e_array           = {tree_reader, "ReconstructedParticles.energy"};
+  TTreeReaderArray<int>    re_pdg_array         = {tree_reader, "ReconstructedParticles.PDG"};
   // Reconstructed/MC particle associations - B0 (using ReconstructedTruthSeededChargedParticles branch)
   TTreeReaderArray<unsigned int> tsassoc_rec_id = {tree_reader, "ReconstructedTruthSeededChargedParticleAssociations.recID"};
   TTreeReaderArray<unsigned int> tsassoc_sim_id = {tree_reader, "ReconstructedTruthSeededChargedParticleAssociations.simID"};
   // Reconstructed particles - B0 (using ReconstructedTruthSeededChargedParticles branch)
-  TTreeReaderArray<float>  tsre_px_array     = {tree_reader, "ReconstructedTruthSeededChargedParticles.momentum.x"};
-  TTreeReaderArray<float>  tsre_py_array     = {tree_reader, "ReconstructedTruthSeededChargedParticles.momentum.y"};
-  TTreeReaderArray<float>  tsre_pz_array     = {tree_reader, "ReconstructedTruthSeededChargedParticles.momentum.z"};
-  TTreeReaderArray<float>  tsre_e_array      = {tree_reader, "ReconstructedTruthSeededChargedParticles.energy"};
-  TTreeReaderArray<float>  tsre_charge_array = {tree_reader, "ReconstructedTruthSeededChargedParticles.charge"};
+  TTreeReaderArray<float>  tsre_px_array        = {tree_reader, "ReconstructedTruthSeededChargedParticles.momentum.x"};
+  TTreeReaderArray<float>  tsre_py_array        = {tree_reader, "ReconstructedTruthSeededChargedParticles.momentum.y"};
+  TTreeReaderArray<float>  tsre_pz_array        = {tree_reader, "ReconstructedTruthSeededChargedParticles.momentum.z"};
+  TTreeReaderArray<float>  tsre_e_array         = {tree_reader, "ReconstructedTruthSeededChargedParticles.energy"};
+  TTreeReaderArray<float>  tsre_charge_array    = {tree_reader, "ReconstructedTruthSeededChargedParticles.charge"};
   // RP hits
-  TTreeReaderArray<float> global_hit_RP_x = {tree_reader, "ForwardRomanPotRecParticles.referencePoint.x"};
-  TTreeReaderArray<float> global_hit_RP_y = {tree_reader, "ForwardRomanPotRecParticles.referencePoint.y"};
-  TTreeReaderArray<float> global_hit_RP_z = {tree_reader, "ForwardRomanPotRecParticles.referencePoint.z"};
-  TTreeReaderArray<float> rp_px_array     = {tree_reader, "ForwardRomanPotRecParticles.momentum.x"};
-  TTreeReaderArray<float> rp_py_array     = {tree_reader, "ForwardRomanPotRecParticles.momentum.y"};
-  TTreeReaderArray<float> rp_pz_array     = {tree_reader, "ForwardRomanPotRecParticles.momentum.z"};
-  TTreeReaderArray<float> rp_mass_array   = {tree_reader, "ForwardRomanPotRecParticles.mass"};
-  TTreeReaderArray<int>   rp_pdg_array    = {tree_reader, "ForwardRomanPotRecParticles.PDG"};
+  TTreeReaderArray<float> global_hit_RP_x       = {tree_reader, "ForwardRomanPotRecParticles.referencePoint.x"};
+  TTreeReaderArray<float> global_hit_RP_y       = {tree_reader, "ForwardRomanPotRecParticles.referencePoint.y"};
+  TTreeReaderArray<float> global_hit_RP_z       = {tree_reader, "ForwardRomanPotRecParticles.referencePoint.z"};
+  TTreeReaderArray<float> rp_px_array           = {tree_reader, "ForwardRomanPotRecParticles.momentum.x"};
+  TTreeReaderArray<float> rp_py_array           = {tree_reader, "ForwardRomanPotRecParticles.momentum.y"};
+  TTreeReaderArray<float> rp_pz_array           = {tree_reader, "ForwardRomanPotRecParticles.momentum.z"};
+  TTreeReaderArray<float> rp_mass_array         = {tree_reader, "ForwardRomanPotRecParticles.mass"};
+  TTreeReaderArray<int>   rp_pdg_array          = {tree_reader, "ForwardRomanPotRecParticles.PDG"};
   
   //---------------------------------------------------------
   // RUN OVER TTREEREADER 
@@ -147,7 +146,7 @@ void DDIS_TDR(TString fileList){
       // Beam proton
       if(mc_genStatus_array[imc] == 4 && mc_pdg_array[imc] == 2212) beamp4_evt.SetCoordinates(mctrk.X(), mctrk.Y(), mctrk.Z(), fMass_proton);
       // Beam electron
-      if(mc_genStatus_array[imc] == 4 && mc_pdg_array[imc] == 11)   beame4_evt.SetCoordinates(mctrk.X(), mctrk.Y(), mctrk.Z(), fMass_electron);
+      if(mc_genStatus_array[imc] == 4 && mc_pdg_array[imc] == 11  ) beame4_evt.SetCoordinates(mctrk.X(), mctrk.Y(), mctrk.Z(), fMass_electron);
     }// END OF MCPARTICLES LOOP
     
     // Add found beams to accumulator
@@ -162,7 +161,7 @@ void DDIS_TDR(TString fileList){
   // Run function to undo effect of afterburner and calculate "postburn" variables
   undoAfterburnAndCalc(beamp4,beame4);
 
-  std::cout<<"[DEBUG] Found beam energies "<<beame4.E()<<"x"<<beamp4.E()<<" GeV"<<std::endl;
+  std::cout << "[DEBUG] Found beam energies " << beame4.E() << "x" << beamp4.E() << " GeV" << std::endl;
   /// BEAMS FOUND AND AFTERBURNER REMOVED
 
   // Main run to find particles and fill histograms
@@ -171,15 +170,17 @@ void DDIS_TDR(TString fileList){
   while (tree_reader.Next()){
     // 4-vectors for MC raw particles
     vector<P3MVector> scate4_gen;   // Scattered electron (generated)
-    vector<P3MVector> scatp4_gen;   // Scattered proton (generated)
-    vector<P3MVector> scatg4_gen;   // Scattered photon (generated)
+    vector<P3MVector> scatp4_gen;   // Scattered proton   (generated)
+    vector<P3MVector> scatg4_gen;   // Scattered photon   (generated)
+
     // 4-vectors for associated MC particles (ONLY SCATTERED - only need photon for resolution plot)
-    vector<P3MVector> scatg4_aso;   // Scattered photon (associated MC)
+    vector<P3MVector> scatg4_aso;   // Scattered photon   (associated MC)
+    
     // 4-vectors for reconstructed particles (SEPARATE PROTONS FOR B0 AND ROMAN POTS)
     vector<P3MVector> scate4_rec;   // Scattered electron (reconstructed)
-    vector<P3MVector> scatp4_rec;   // Scattered proton (B0 reconstructed)
-    vector<P3MVector> scatp4_rom;   // Scattered proton (Roman Pots reconstructed)
-    vector<P3MVector> scatg4_rec;   // Scattered photon (reconstructed)      
+    vector<P3MVector> scatp4_rec;   // Scattered proton   (B0 reconstructed)
+    vector<P3MVector> scatp4_rom;   // Scattered proton   (Roman Pots reconstructed)
+    vector<P3MVector> scatg4_rec;   // Scattered photon   (reconstructed)      
 
     // Holding 3-vectors
     TVector3 mctrk, assoctrk, recotrk;
@@ -197,15 +198,9 @@ void DDIS_TDR(TString fileList){
 	
       // Look for scattered particles ==> Generator status 1
       if(mc_genStatus_array[imc] == 1){
-	if(mc_pdg_array[imc] == 2212){
-	  scatp4_gen.push_back(q_scat);
-	}
-	if(mc_pdg_array[imc] == 11){
-	  scate4_gen.push_back(q_scat);
-	}
-	if(mc_pdg_array[imc] == 22){
-	  scatg4_gen.push_back(q_scat);
-	}
+      	if(mc_pdg_array[imc] == 2212) scatp4_gen.push_back(q_scat);// proton
+	      if(mc_pdg_array[imc] == 11  ) scate4_gen.push_back(q_scat);// electron
+	      if(mc_pdg_array[imc] == 22  ) scatg4_gen.push_back(q_scat);// gamma
       } // Found scattered particles
     }// End of generated particles loop
       
@@ -222,19 +217,18 @@ void DDIS_TDR(TString fileList){
       assoctrk.SetXYZ(mc_px_array[mc_assoc_index], mc_py_array[mc_assoc_index], mc_pz_array[mc_assoc_index]); 
       P3MVector q_assoc(assoctrk.X(),assoctrk.Y(),assoctrk.Z(),mc_mass_array[mc_assoc_index]);
       undoAfterburn(q_assoc);
+
       recotrk.SetXYZ(re_px_array[iAssoc], re_py_array[iAssoc], re_pz_array[iAssoc]);
       P3MVector q_reco(recotrk.X(),recotrk.Y(),recotrk.Z(),mc_mass_array[mc_assoc_index]);
       undoAfterburn(q_reco);
 	
       // Fill track vectors based on associated PID
       // Electrons
-      if(mc_genStatus_array[mc_assoc_index] == 1 && mc_pdg_array[mc_assoc_index] == 11){ 
-	scate4_rec.push_back(q_reco); 
-      }
+      if(mc_genStatus_array[mc_assoc_index] == 1 && mc_pdg_array[mc_assoc_index] == 11)	scate4_rec.push_back(q_reco); 
       // Photons
       if(mc_genStatus_array[mc_assoc_index] == 1 && mc_pdg_array[mc_assoc_index] == 22){ 
-	scatg4_aso.push_back(q_assoc); 
-	scatg4_rec.push_back(q_reco); 
+	      scatg4_aso.push_back(q_assoc); 
+	      scatg4_rec.push_back(q_reco); 
       }
     } // End of associations loop
     
@@ -245,11 +239,10 @@ void DDIS_TDR(TString fileList){
 	
       // Only care about protons here (PID 2212)
       if(mc_assoc_index != -1 && mc_genStatus_array[mc_assoc_index] == 1 && mc_pdg_array[mc_assoc_index] == 2212){
-	recotrk.SetXYZ(tsre_px_array[iTSAssoc], tsre_py_array[iTSAssoc], tsre_pz_array[iTSAssoc]);
-	P3MVector q_reco(recotrk.X(),recotrk.Y(),recotrk.Z(),mc_mass_array[mc_assoc_index]);
-	undoAfterburn(q_reco);
-	  
-	scatp4_rec.push_back(q_reco); 
+	      recotrk.SetXYZ(tsre_px_array[iTSAssoc], tsre_py_array[iTSAssoc], tsre_pz_array[iTSAssoc]);
+	      P3MVector q_reco(recotrk.X(),recotrk.Y(),recotrk.Z(),mc_mass_array[mc_assoc_index]);
+	      undoAfterburn(q_reco);
+	      scatp4_rec.push_back(q_reco); 
       }
     } // End of truth-seeded association loop
     
@@ -260,7 +253,7 @@ void DDIS_TDR(TString fileList){
       
       P3MVector q_rpreco(recotrk.X(),recotrk.Y(),recotrk.Z(),rp_mass_array[irpreco]);
       if(rp_pdg_array[irpreco] == 2212){
-	scatp4_rom.push_back(q_rpreco);
+	      scatp4_rom.push_back(q_rpreco);
       }
     }// End of RP reconstructed particles loop
 
@@ -280,16 +273,17 @@ void DDIS_TDR(TString fileList){
       if(scatg4_gen.size() == 1) h_eta_MCg->Fill(scatg4_gen[0].Eta());
       // p'
       if(scatp4_gen.size() == 1 && scatp4_gen[0].Theta()<0.02){
-	h_eta_MCp->Fill(scatp4_gen[0].Eta());
-	// Add exclusivity cuts for t-distribution
-	if(scate4_gen.size() == 1 && scatg4_gen.size() == 1){
-	  // Need to calculate kinematics before cutting on them
-	  Float_t fM2miss = calcM2Miss_3Body(beame4, beamp4, scate4_gen[0], scatp4_gen[0], scatg4_gen[0]);
-	  Float_t ft = calcT(beamp4, scatp4_gen[0]);
+	      h_eta_MCp->Fill(scatp4_gen[0].Eta());
+	      // Add exclusivity cuts for t-distribution
+	      if(scate4_gen.size() == 1 && scatg4_gen.size() == 1){
+	        // Need to calculate kinematics before cutting on them
+	        Float_t fM2miss = calcM2Miss_3Body(beame4, beamp4, scate4_gen[0], scatp4_gen[0], scatg4_gen[0]);
+	        Float_t ft = calcT(beamp4, scatp4_gen[0]);
+          std:: cout << "[DEBUG]: 279: " << ft << std::endl;
 	    
-	  // Want MM2 to be close to zero
-	  if(TMath::Abs(fM2miss) < 1) h_t_MC->Fill(ft);
-	} // Exclusivity required
+	        // Want MM2 to be close to zero
+	        if(TMath::Abs(fM2miss) < 1) h_t_MC->Fill(ft);
+	      } // Exclusivity required
       } // Proton tracks done
     } // Q2 limit
     
@@ -305,29 +299,31 @@ void DDIS_TDR(TString fileList){
       if(scatg4_rec.size() == 1) h_eta_RPg->Fill(scatg4_rec[0].Eta());
       // p' (B0 - theta between 5.5 and 20 mrad)
       if(scatp4_rec.size() == 1 && scatp4_rec[0].Theta()>0.0055 && scatp4_rec[0].Theta()<0.02){
-	h_eta_RPp->Fill(scatp4_rec[0].Eta());
-	// Add exclusivity cuts for t-distribution
-	if(scate4_rec.size() == 1 && scatg4_rec.size() == 1){
-	  // Need to calculate kinematics before cutting on them
-	  Float_t fM2miss = calcM2Miss_3Body(beame4, beamp4, scate4_rec[0], scatp4_rec[0], scatg4_rec[0]);
-	  Float_t ft = calcT(beamp4, scatp4_rec[0]);
+	      h_eta_RPp->Fill(scatp4_rec[0].Eta());
+	      // Add exclusivity cuts for t-distribution
+	      if(scate4_rec.size() == 1 && scatg4_rec.size() == 1){
+	        // Need to calculate kinematics before cutting on them
+	        Float_t fM2miss = calcM2Miss_3Body(beame4, beamp4, scate4_rec[0], scatp4_rec[0], scatg4_rec[0]);
+	        Float_t ft = calcT(beamp4, scatp4_rec[0]);
+          std:: cout << "[DEBUG]: 304: " << ft << std::endl;
 	    
-	  // Want MM2 to be close to zero
-	  if(TMath::Abs(fM2miss) < 1) h_t_RP->Fill(ft);
-	} // Exclusivity required
+	        // Want MM2 to be close to zero
+	        if(TMath::Abs(fM2miss) < 1) h_t_RP->Fill(ft);
+	      } // Exclusivity required
       } // B0 Proton tracks found
       // p' (RP - theta less than 5 mrad)
       if(scatp4_rom.size() == 1 && scatp4_rom[0].Theta()<0.005){
-	h_eta_RPPp->Fill(scatp4_rom[0].Eta());
-	// Add exclusivity cuts for t-distribution
-	if(scate4_rec.size() == 1 && scatg4_rec.size() == 1){
-	  // Need to calculate kinematics before cutting on them
-	  Float_t fM2miss = calcM2Miss_3Body(beame4, beamp4, scate4_rec[0], scatp4_rom[0], scatg4_rec[0]);
-	  Float_t ft = calcT(beamp4, scatp4_rom[0]);
+	      h_eta_RPPp->Fill(scatp4_rom[0].Eta());
+	      // Add exclusivity cuts for t-distribution
+	      if(scate4_rec.size() == 1 && scatg4_rec.size() == 1){
+	        // Need to calculate kinematics before cutting on them
+	        Float_t fM2miss = calcM2Miss_3Body(beame4, beamp4, scate4_rec[0], scatp4_rom[0], scatg4_rec[0]);
+	        Float_t ft = calcT(beamp4, scatp4_rom[0]);
+          std:: cout << "[DEBUG]: 317: " << ft << std::endl;
 	    
-	  // Want MM2 to be close to zero
-	  if(TMath::Abs(fM2miss) < 1 && ft < 0.3) h_t_RPP->Fill(ft);
-	} // Exclusivity required
+	        // Want MM2 to be close to zero
+	        if(TMath::Abs(fM2miss) < 1 && ft < 0.3) h_t_RPP->Fill(ft);
+	      } // Exclusivity required
       } // RP Proton tracks found
     } // Q2 limit
     
