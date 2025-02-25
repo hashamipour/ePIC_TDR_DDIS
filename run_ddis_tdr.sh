@@ -6,6 +6,8 @@ if [ $# -ne 1]; then
   exit 1  # Exit with an error code
 fi
 
+export CLING_DEBUG=1
+
 # Assign the arguments to variables
 list_file="$1"
 
@@ -16,5 +18,5 @@ root -b -q "./DDIS_TDR.cpp(\"${list_file}\")"
 # ./myprogram "$rec_file" "$outputfile"
 
 # Optional: Print the filenames for confirmation (good for debugging)
-echo "Analyzed file: $rec_file"
+echo "Analyzed file: $list_file"
 

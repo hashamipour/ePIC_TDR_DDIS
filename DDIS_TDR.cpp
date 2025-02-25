@@ -209,39 +209,47 @@ void DDIS_TDR(TString fileList){
 
     unsigned int mc_assoc_index = -1;
     // LOOK FOR ELECTRONS AND PHOTONS (using ReconstructedParticleAssociations)
-    for(unsigned int iAssoc{0}; iAssoc < assoc_rec_id.GetSize(); iAssoc++){
-      mc_assoc_index = assoc_sim_id[iAssoc];
+    // for(unsigned int iAssoc{0}; iAssoc < assoc_rec_id.GetSize(); iAssoc++){
+    //   mc_assoc_index = assoc_sim_id[iAssoc];
 	
-      // If reco track isn't associated to an MC track, then skip
-      if(mc_assoc_index == -1) continue;
+    //   // If reco track isn't associated to an MC track, then skip
+    //   if(mc_assoc_index == -1) continue;
 	
-      assoctrk.SetXYZ(mc_px_array[mc_assoc_index], mc_py_array[mc_assoc_index], mc_pz_array[mc_assoc_index]); 
-      P3MVector q_assoc(assoctrk.X(),assoctrk.Y(),assoctrk.Z(),mc_mass_array[mc_assoc_index]);
-      undoAfterburn(q_assoc);
+    //   assoctrk.SetXYZ(mc_px_array[mc_assoc_index], mc_py_array[mc_assoc_index], mc_pz_array[mc_assoc_index]); 
+    //   P3MVector q_assoc(assoctrk.X(),assoctrk.Y(),assoctrk.Z(),mc_mass_array[mc_assoc_index]);
+    //   undoAfterburn(q_assoc);
 
-      recotrk.SetXYZ(re_px_array[iAssoc], re_py_array[iAssoc], re_pz_array[iAssoc]);
-      P3MVector q_reco(recotrk.X(),recotrk.Y(),recotrk.Z(),mc_mass_array[mc_assoc_index]);
-      undoAfterburn(q_reco);
+    //   recotrk.SetXYZ(re_px_array[iAssoc], re_py_array[iAssoc], re_pz_array[iAssoc]);
+    //   P3MVector q_reco(recotrk.X(),recotrk.Y(),recotrk.Z(),mc_mass_array[mc_assoc_index]);
+    //   undoAfterburn(q_reco);
 	
-      // Fill track vectors based on associated PID
-      // Electrons
-      if(mc_genStatus_array[mc_assoc_index] == 1 && mc_pdg_array[mc_assoc_index] == 11)	scate4_rec.push_back(q_reco); 
-      // Photons
-      if(mc_genStatus_array[mc_assoc_index] == 1 && mc_pdg_array[mc_assoc_index] == 22){ 
-	      scatg4_aso.push_back(q_assoc); 
-	      scatg4_rec.push_back(q_reco); 
-      }
-    } // End of associations loop
+    //   // Fill track vectors based on associated PID
+    //   // Electrons
+    //   if(mc_genStatus_array[mc_assoc_index] == 1 && mc_pdg_array[mc_assoc_index] == 11)	scate4_rec.push_back(q_reco); 
+    //   // Photons
+    //   if(mc_genStatus_array[mc_assoc_index] == 1 && mc_pdg_array[mc_assoc_index] == 22){ 
+	  //     scatg4_aso.push_back(q_assoc); 
+	  //     scatg4_rec.push_back(q_reco); 
+    //   }
+    // } // End of associations loop
     
     mc_assoc_index=-1; // Reset association index
     // THEN LOOK FOR PROTONS (using ReconstructedTruthSeededChargedParticleAssociations)
     for(unsigned int iTSAssoc{0}; iTSAssoc < tsassoc_rec_id.GetSize(); iTSAssoc++){
       mc_assoc_index = tsassoc_sim_id[iTSAssoc];
-	
+      
       // Only care about protons here (PID 2212)
       if(mc_assoc_index != -1 && mc_genStatus_array[mc_assoc_index] == 1 && mc_pdg_array[mc_assoc_index] == 2212){
 	      recotrk.SetXYZ(tsre_px_array[iTSAssoc], tsre_py_array[iTSAssoc], tsre_pz_array[iTSAssoc]);
 	      P3MVector q_reco(recotrk.X(), recotrk.Y(), recotrk.Z(), mc_mass_array[mc_assoc_index]);
+        // i should have a x_L cut here x_L>0.97 (?): ZEUS EPJC1 81 (1998)
+        double x_L=0;
+        x_L = recotrk.Z()/beamp4.Z();
+
+        if (x_L > 0.9){
+        std::cout << "x_L: " << x_L << std::endl;// x_L reconstructed
+        std::cout << "  t: " << -recotrk.Perp2()/x_L << std::endl;
+        }
 	      undoAfterburn(q_reco);
 	      scatp4_rec.push_back(q_reco); 
       }
@@ -275,15 +283,16 @@ void DDIS_TDR(TString fileList){
       if(scatp4_gen.size() == 1 && scatp4_gen[0].Theta()<0.02){
 	      h_eta_MCp->Fill(scatp4_gen[0].Eta());
 	      // Add exclusivity cuts for t-distribution
-	      if(scate4_gen.size() == 1 && scatg4_gen.size() == 1){
+	      // if(scate4_gen.size() == 1 && scatg4_gen.size() == 1){
 	        // Need to calculate kinematics before cutting on them
-	        Float_t fM2miss = calcM2Miss_3Body(beame4, beamp4, scate4_gen[0], scatp4_gen[0], scatg4_gen[0]);
+	        // Float_t fM2miss = calcM2Miss_3Body(beame4, beamp4, scate4_gen[0], scatp4_gen[0], scatg4_gen[0]);
 	        Float_t ft = calcT(beamp4, scatp4_gen[0]);
-          std:: cout <<  std::setw(21)  << "[DEBUG] MC level 't': " << ft << std::endl;
+          // std:: cout <<  std::setw(21)  << "[DEBUG] MC level 't': " << ft << std::endl;
 	    
 	        // Want MM2 to be close to zero
-	        if(TMath::Abs(fM2miss) < 1) h_t_MC->Fill(ft);
-	      } // Exclusivity required
+	        // if(TMath::Abs(fM2miss) < 1) h_t_MC->Fill(ft);
+          h_t_MC->Fill(ft);
+	      // } // Exclusivity required
       } // Proton tracks done
     } // Q2 limit
     
@@ -292,7 +301,7 @@ void DDIS_TDR(TString fileList){
     if(scate4_rec.size() == 0) fQ2 = 0;
     else fQ2 = calcQ2(beame4, scate4_rec[0]);
     // Eta (inclusive tracks)
-    if(fQ2 >= 1){
+    if(fQ2 >= 1){// >= 1 in Olivers code, i tried with 0
       // e'
       if(scate4_rec.size() == 1) h_eta_RPe->Fill(scate4_rec[0].Eta());
       // gamma
@@ -302,30 +311,32 @@ void DDIS_TDR(TString fileList){
       if(scatp4_rec.size() == 1 && scatp4_rec[0].Theta() > 0.0055 && scatp4_rec[0].Theta() < 0.02){
 	      h_eta_RPp->Fill(scatp4_rec[0].Eta());
 	      // Add exclusivity cuts for t-distribution
-	      if(scate4_rec.size() == 1 && scatg4_rec.size() == 1){
+	      // if(scate4_rec.size() == 1 && scatg4_rec.size() == 1){
 	        // Need to calculate kinematics before cutting on them
-	        Float_t fM2miss = calcM2Miss_3Body(beame4, beamp4, scate4_rec[0], scatp4_rec[0], scatg4_rec[0]);
+	        // Float_t fM2miss = calcM2Miss_3Body(beame4, beamp4, scate4_rec[0], scatp4_rec[0], scatg4_rec[0]);
 	        Float_t ft = calcT(beamp4, scatp4_rec[0]);
-          std:: cout << std::left << std::setw(22)  << "[DEBUG] B0 't': " << ft << std::endl;
+          // std:: cout << std::left << std::setw(22)  << "[DEBUG] B0 't': " << ft << std::endl;
 	    
 	        // Want MM2 to be close to zero
-	        if(TMath::Abs(fM2miss) < 1) h_t_RP->Fill(ft);
-	      } // Exclusivity required
+	        // if(TMath::Abs(fM2miss) < 1) h_t_RP->Fill(ft);
+          h_t_RP->Fill(ft);
+	      // } // Exclusivity required
       } // B0 Proton tracks found
-
       // p' (RP - theta less than 5 mrad)
-      if(scatp4_rom.size() == 1 && scatp4_rom[0].Theta()<0.005){
+      if(scatp4_rom.size() == 1 && scatp4_rom[0].Theta() < 0.005){// 0.005
 	      h_eta_RPPp->Fill(scatp4_rom[0].Eta());
 	      // Add exclusivity cuts for t-distribution
-	      if(scate4_rec.size() == 1 && scatg4_rec.size() == 1){
+	      // if(scate4_rec.size() == 1 && scatg4_rec.size() == 1){
 	        // Need to calculate kinematics before cutting on them
-	        Float_t fM2miss = calcM2Miss_3Body(beame4, beamp4, scate4_rec[0], scatp4_rom[0], scatg4_rec[0]);
+	        // Float_t fM2miss = calcM2Miss_3Body(beame4, beamp4, scate4_rec[0], scatp4_rom[0], scatg4_rec[0]);
 	        Float_t ft = calcT(beamp4, scatp4_rom[0]);
-          std:: cout <<  std::setw(21) << "[DEBUG] RomanPot 't': " << ft << std::endl;
+          // std:: cout <<  std::setw(21) << "[DEBUG] RomanPot 't': " << ft << std::endl;
 	    
 	        // Want MM2 to be close to zero
-	        if(TMath::Abs(fM2miss) < 1 && ft < 0.3) h_t_RPP->Fill(ft);
-	      } // Exclusivity required
+	        // if(TMath::Abs(fM2miss) < 1 && ft < 0.3) h_t_RPP->Fill(ft);
+          // if( ft < 0.3) h_t_RPP->Fill(ft);
+          h_t_RPP->Fill(ft);
+	      // } // Exclusivity required
       } // RP Proton tracks found
     } // Q2 limit
     
@@ -468,49 +479,49 @@ void DDIS_TDR(TString fileList){
   lC1p3->Draw();
 
   // CANVAS 2: T-DISTRIBUTION
-  // TCanvas* c2 = new TCanvas("c2","",1200,800);
-  // h_t_MC->SetMinimum(1);
-  // gPad->SetLogy(1);
-  // h_t_MC->GetXaxis()->SetTitle("|t| [GeV^{2}]");
-  // h_t_MC->GetYaxis()->SetTitle("Counts / 0.02 GeV^{2}");
-  // h_t_MC->SetLineColor(kBlack);
-  // h_t_MC->SetLineWidth(2);
-  // h_t_MC->Draw();
-  // h_t_RP->SetLineColor(kBlue);
-  // h_t_RP->SetMarkerColor(kBlue);
-  // h_t_RP->SetMarkerStyle(20);
-  // h_t_RP->Draw("pesame");
-  // h_t_RPP->SetLineColor(kCyan+1);
-  // h_t_RPP->SetMarkerColor(kCyan+1);
-  // h_t_RPP->SetMarkerStyle(20);
-  // h_t_RPP->Draw("pesame");
-  // // Create header text objects
-  // TLatex* tHead1 = new TLatex(0.10, 0.91, sHead1);
-  // tHead1->SetNDC();
-  // tHead1->SetTextSize(30);
-  // tHead1->SetTextFont(43);
-  // tHead1->SetTextColor(kBlack);
-  // TLatex* tHead2 = new TLatex(0.74, 0.91, sHead2);
-  // tHead2->SetNDC();
-  // tHead2->SetTextSize(30);
-  // tHead2->SetTextFont(43);
-  // tHead2->SetTextColor(kBlack);
-  // tHead1->Draw("same");
-  // tHead2->Draw("same");
-  // // Add legend
-  // TLatex* tC2 = new TLatex(0.58, 0.83, "#splitline{#bf{EpIC} ep #rightarrow e'p'#gamma, Q^{2} #geq 1 GeV^{2}}{t_{RP} #leq 0.3 GeV^{2}, M_{miss}^{2} < 1 GeV^{2}}");
-  // tC2->SetNDC();
-  // tC2->SetTextSize(30);
-  // tC2->SetTextFont(43);
-  // tC2->SetTextColor(kBlack);
-  // tC2->Draw("same");
-  // TLegend* lC2 = new TLegend(0.57, 0.6, 0.8, 0.77);
-  // lC2->SetLineColorAlpha(kWhite,0);
-  // lC2->SetFillColorAlpha(kWhite,0);
-  // lC2->AddEntry(h_t_MC, "#bf{EpIC} MC gen.", "l");
-  // lC2->AddEntry(h_t_RP, "Reco. B0", "lp");
-  // lC2->AddEntry(h_t_RPP, "Reco. RP", "lp");
-  // lC2->Draw();
+  TCanvas* c2 = new TCanvas("c2","",1200,800);
+  h_t_MC->SetMinimum(0.1);
+  gPad->SetLogy(1);
+  h_t_MC->GetXaxis()->SetTitle("|t| [GeV^{2}]");
+  h_t_MC->GetYaxis()->SetTitle("Counts / 0.02 GeV^{2}");
+  h_t_MC->SetLineColor(kBlack);
+  h_t_MC->SetLineWidth(2);
+  h_t_MC->Draw();
+  h_t_RP->SetLineColor(kBlue);
+  h_t_RP->SetMarkerColor(kBlue);
+  h_t_RP->SetMarkerStyle(20);
+  h_t_RP->Draw("pesame");
+  h_t_RPP->SetLineColor(kCyan+1);
+  h_t_RPP->SetMarkerColor(kCyan+1);
+  h_t_RPP->SetMarkerStyle(20);
+  h_t_RPP->Draw("pesame");
+  // Create header text objects
+  TLatex* tHead1 = new TLatex(0.10, 0.91, sHead1);
+  tHead1->SetNDC();
+  tHead1->SetTextSize(30);
+  tHead1->SetTextFont(43);
+  tHead1->SetTextColor(kBlack);
+  TLatex* tHead2 = new TLatex(0.74, 0.91, sHead2);
+  tHead2->SetNDC();
+  tHead2->SetTextSize(30);
+  tHead2->SetTextFont(43);
+  tHead2->SetTextColor(kBlack);
+  tHead1->Draw("same");
+  tHead2->Draw("same");
+  // Add legend
+  TLatex* tC2 = new TLatex(0.58, 0.83, "#splitline{#bf{EpIC} ep #rightarrow e'p'#gamma, Q^{2} #geq 1 GeV^{2}}{t_{RP} #leq 0.3 GeV^{2}}");
+  tC2->SetNDC();
+  tC2->SetTextSize(30);
+  tC2->SetTextFont(43);
+  tC2->SetTextColor(kBlack);
+  tC2->Draw("same");
+  TLegend* lC2 = new TLegend(0.57, 0.6, 0.8, 0.77);
+  lC2->SetLineColorAlpha(kWhite,0);
+  lC2->SetFillColorAlpha(kWhite,0);
+  lC2->AddEntry(h_t_MC, "#bf{EpIC} MC gen.", "l");
+  lC2->AddEntry(h_t_RP, "Reco. B0", "lp");
+  lC2->AddEntry(h_t_RPP, "Reco. RP", "lp");
+  lC2->Draw();
 
   // CANVAS 3A: PHOTON ANGLE RESOLUTION (INSET)
   TCanvas* c3 = new TCanvas("c3","",1200,800);
@@ -557,8 +568,8 @@ void DDIS_TDR(TString fileList){
   //---------------------------------------------------------
   c1->SaveAs("figs/DDIS_eta.png");
   c1->Close();
-  // c2->SaveAs("figs/DDIS_t.png");
-  // c2->Close();
+  c2->SaveAs("figs/DDIS_t.png");
+  c2->Close();
   c3->SaveAs("figs/DDIS_photres.png");
   c3->Close();
 
