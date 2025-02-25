@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.dat": "csv",
+        "*.hepmcout": "csv",
+        "diffractive_dis_Q2only.C": "cpp",
+        "analysis_Q2.C": "cpp"
+    }
+}

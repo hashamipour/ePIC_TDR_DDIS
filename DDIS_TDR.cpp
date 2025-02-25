@@ -75,12 +75,33 @@ void DDIS_TDR(TString fileList){
   TH1D* h_eta_RPp  = new TH1D("eta_RPp",";#eta_{p'}(Reco)", 275, -11.0, 11.0);
   TH1D* h_eta_RPPp = new TH1D("eta_RPPp",";#eta_{p'}(Reco)", 275, -11.0, 11.0);
   // t distributions
-  TH1D* h_t_MC     = new TH1D("t_MC"   , ";|t|(MC) [(GeV/c^{2})^{2}]"  , 100, 0.0, 2.0);
+  //TH1D* h_t_MC     = new TH1D("t_MC"   , ";|t|(MC) [(GeV/c^{2})^{2}]"  , 100, 0.0, 2.0);
   TH1D* h_t_RP     = new TH1D("t_RP"    , ";|t|(Reco) [(GeV/c^{2})^{2}]"  , 100, 0.0, 2.0);
   TH1D* h_t_RPP    = new TH1D("t_RPP"   , ";|t|(Reco) [(GeV/c^{2})^{2}]"  , 100, 0.0, 2.0);
   // Photon angluar resolutions
   TH1D* h_PhotRes_theta   = new TH1D("photres_theta",";#theta_{#gamma}(Reco)-#theta_{#gamma}(MC) [rad]",600,-1.5,1.5);
   TH2D* h_PhotRes2D_theta = new TH2D("photres2d_theta",";#theta_{#gamma, MC} [rad]; #delta#theta_{#gamma}",320,0,3.2,600,-1.5,1.5);
+
+  // MY histograms
+  //events Kinematics MC as I calculated
+  TH1D* h_Q2_e     = new TH1D("h_Q2_e",";Q^{2}",100,0,20);
+  TH1D* h_y_e      = new TH1D("h_y_e",";y_{e,MC}",100,0,1);
+  TH1D* h_x_e      = new TH1D("h_x_e",";x_{e,MC}",30,0,0.15);
+  TH1D* h_t_MC     = new TH1D("h_t_MC",";t_{MC}; counts",100,-1,0);
+  // using the electron method
+  TH1D* h_Q2_e_m   = new TH1D("h_Q2_e_m",";Q^{2}",100,0,20);
+  TH1D* h_y_e_m    = new TH1D("h_y_e_m",";y_{e,MC}",100,0,1);
+  TH1D* h_x_e_m    = new TH1D("h_x_e_m",";x_{e,MC}",30,0,0.15);
+  // Kinematic MC Truth from branches 
+  TH1D* h_y_truth  = new TH1D("h_y_truth","y_{truth}",100,0,1);
+  TH1D* h_x_truth  = new TH1D("h_x_truth","x_{truth}",30,0,0.15);
+  TH1D* h_Q2_truth = new TH1D("h_Q2_truth","Q^2",100,0,20);
+
+
+  // Kinematic Reconstructed
+  TH1D* h_Q2REC_e        = new TH1D("h_Q2REC_e",";Q^{2}_{e,REC}",100,0,20);
+  TH1D* h_yREC_e         = new TH1D("h_yREC_e",";y_{e,REC}",100,0,1);
+
 
   //---------------------------------------------------------
   // DECLARE TTREEREADER AND BRANCHES TO USE
