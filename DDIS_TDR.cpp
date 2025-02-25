@@ -24,6 +24,8 @@ void undoAfterburn(P3MVector& p); // Undo procedure ONLY
 
 const Float_t fMass_proton{0.938272};
 const Float_t fMass_electron{0.000511};
+double MASS_PROTON   = fMass_proton;
+double MASS_ELECTRON = fMass_electron;
 
 // Objects for undoing afterburn boost
 Float_t fXAngle{-0.025}; // Crossing angle in radians
@@ -82,7 +84,7 @@ void DDIS_TDR(TString fileList){
   TH1D* h_PhotRes_theta   = new TH1D("photres_theta",";#theta_{#gamma}(Reco)-#theta_{#gamma}(MC) [rad]",600,-1.5,1.5);
   TH2D* h_PhotRes2D_theta = new TH2D("photres2d_theta",";#theta_{#gamma, MC} [rad]; #delta#theta_{#gamma}",320,0,3.2,600,-1.5,1.5);
 
-  // MY histograms
+  // MY HISTOGRAMS
   //events Kinematics MC as I calculated
   TH1D* h_Q2_e     = new TH1D("h_Q2_e",";Q^{2}",100,0,20);
   TH1D* h_y_e      = new TH1D("h_y_e",";y_{e,MC}",100,0,1);
@@ -97,11 +99,16 @@ void DDIS_TDR(TString fileList){
   TH1D* h_x_truth  = new TH1D("h_x_truth","x_{truth}",30,0,0.15);
   TH1D* h_Q2_truth = new TH1D("h_Q2_truth","Q^2",100,0,20);
 
+  // Kinematic using DA
+  TH1D* h_y_DA     = new TH1D("h_y_DA","y_{DA}",100,0,1);
+  TH1D* h_Q2_DA    = new TH1D("h_Q2_e_m",";Q^{2}",100,0,20);
+
+
 
   // Kinematic Reconstructed
   TH1D* h_Q2REC_e        = new TH1D("h_Q2REC_e",";Q^{2}_{e,REC}",100,0,20);
   TH1D* h_yREC_e         = new TH1D("h_yREC_e",";y_{e,REC}",100,0,1);
-
+  TH1D* h_tREC_B0        = new TH1D("h_tREC_B0",";t_{REC}(B0); counts",100,-1,0);
 
   //---------------------------------------------------------
   // DECLARE TTREEREADER AND BRANCHES TO USE
@@ -155,6 +162,48 @@ void DDIS_TDR(TString fileList){
   P3MVector beamp4_acc(0,0,0,-1);     // Beam proton (generated)
   
   while (tree_reader.Next()){
+    ///////////////////////////////////// stuff from old code ////////////////////////////
+    unsigned int mc_elect_index=-1;
+    double maxPt=-99.;
+    /*
+    Beam particles
+    */
+    TLorentzVector ebeam(0,0,0,0);
+    TLorentzVector pbeam(0,0,0,0);
+    TLorentzVector scatElectronMC(0,0,0,0);// hh: this should be scattered electron
+    TLorentzVector scatProtonMC(0,0,0,0);  // hh: this is scattered proton
+  
+    for(unsigned int imc=0; imc < mc_px_array.GetSize(); imc++){
+      // std::cout << "Filled branch entries: " << std::setw(3)  << rp_rec_px_array.GetSize() << std::endl;
+  
+      TVector3 mctrk(mc_px_array[imc],mc_py_array[imc],mc_pz_array[imc]);
+      if(mc_genStatus_array[imc]==4){//4 is beam particle
+        if(mc_pdg_array[imc]==11  ) ebeam.SetVectM(mctrk, MASS_ELECTRON);
+        if(mc_pdg_array[imc]==2212) pbeam.SetVectM(mctrk, MASS_PROTON  );
+      }
+      if(mc_genStatus_array[imc]!=1) continue;
+      if(mc_pdg_array[imc]==11&& mctrk.Perp()>maxPt){
+        maxPt=mctrk.Perp();
+        mc_elect_index=imc;
+        scatElectronMC.SetVectM(mctrk,mc_mass_array[imc]);
+      }
+      if(mc_pdg_array[imc]==2212 && mc_genStatus_array[imc]==1){// hh: this should be scattered proton
+        scatProtonMC.SetVectM(mctrk,mc_mass_array[imc]);
+      }
+    }
+    TLorentzVector qbeam       = ebeam - scatElectronMC;
+    TLorentzVector deltaProton = scatProtonMC - pbeam;
+    double pDotq = pbeam.Dot(qbeam);
+    double y     = pDotq/pbeam.Dot(ebeam);
+    double Q2    = -(qbeam).Mag2();
+    double xBj   = -(qbeam.Dot(qbeam))/(2.0*pDotq);
+  
+  
+    h_t_MC->Fill(deltaProton.Mag2());
+    h_y_e->Fill(y);
+    h_x_e->Fill(xBj);
+    h_Q2_e->Fill(Q2);	  
+    //////////////////////////////////////////////////////////////////////////////////////
     // Beams for each event
     P3MVector beame4_evt(0,0,0,-1);
     P3MVector beamp4_evt(0,0,0,-1);
@@ -264,12 +313,14 @@ void DDIS_TDR(TString fileList){
 	      recotrk.SetXYZ(tsre_px_array[iTSAssoc], tsre_py_array[iTSAssoc], tsre_pz_array[iTSAssoc]);
 	      P3MVector q_reco(recotrk.X(), recotrk.Y(), recotrk.Z(), mc_mass_array[mc_assoc_index]);
         // i should have a x_L cut here x_L>0.97 (?): ZEUS EPJC1 81 (1998)
-        double x_L=0;
+        double x_L = 0;
+        double t   = 0;
         x_L = recotrk.Z()/beamp4.Z();
-
-        if (x_L > 0.9){
-        std::cout << "x_L: " << x_L << std::endl;// x_L reconstructed
-        std::cout << "  t: " << -recotrk.Perp2()/x_L << std::endl;
+        t   = -recotrk.Perp2()/x_L;
+        if (x_L > 0.97){
+        // std::cout << "x_L: " << x_L << std::endl;// x_L reconstructed
+        // std::cout << "  t: " << t << std::endl;
+        h_tREC_B0->Fill(-recotrk.Perp2()/x_L);
         }
 	      undoAfterburn(q_reco);
 	      scatp4_rec.push_back(q_reco); 
@@ -593,6 +644,238 @@ void DDIS_TDR(TString fileList){
   c2->Close();
   c3->SaveAs("figs/DDIS_photres.png");
   c3->Close();
+
+
+  ///////////////////////////////////////////////////////////////////////
+  //// the reconstructed variables from the branches
+  Float_t electron_Q2;
+  events->SetBranchAddress("InclusiveKinematicsElectron.Q2", &electron_Q2);
+
+  Long64_t nentries = events->GetEntries();
+
+  for (Long64_t i = 0; i < nentries; i++) {
+    events->GetEntry(i);
+    h_Q2_e_m->Fill(electron_Q2);
+  }
+  /////
+  Float_t electron_y;
+  events->SetBranchAddress("InclusiveKinematicsElectron.y", &electron_y);
+
+  nentries = events->GetEntries();
+
+  for (Long64_t i = 0; i < nentries; i++) {
+    events->GetEntry(i);
+    h_y_e_m->Fill(electron_y);
+  }
+  /////
+  Float_t electron_x;
+  events->SetBranchAddress("InclusiveKinematicsElectron.x", &electron_x);
+
+  nentries = events->GetEntries();
+
+  for (Long64_t i = 0; i < nentries; i++) {
+    events->GetEntry(i);
+    h_x_e_m->Fill(electron_x);
+  }
+
+  //h_y_DA
+  events->SetBranchAddress("InclusiveKinematicsDA.y", &electron_y);
+  nentries = events->GetEntries();
+
+  for (Long64_t i = 0; i < nentries; i++) {
+    events->GetEntry(i);
+    h_y_DA->Fill(electron_y);
+  }
+
+  //h_Q2_DA
+  events->SetBranchAddress("InclusiveKinematicsDA.Q2", &electron_Q2);
+  nentries = events->GetEntries();
+
+  for (Long64_t i = 0; i < nentries; i++) {
+    events->GetEntry(i);
+    h_Q2_DA->Fill(electron_Q2);
+  }
+
+  /////////////////////////////////////////////////////////////
+
+  //// the kinamtic truth from branches
+  events->SetBranchAddress("InclusiveKinematicsTruth.Q2",&electron_Q2);
+  nentries = events->GetEntries();
+
+  for (Long64_t i=0; i < nentries; i++){
+    events->GetEntry(i);
+    h_Q2_truth->Fill(electron_Q2);
+  }
+
+
+  events->SetBranchAddress("InclusiveKinematicsTruth.y",&electron_y);
+  nentries = events->GetEntries();
+  for (Long64_t i=0; i< nentries;i++){
+    events->GetEntry(i);
+    h_y_truth->Fill(electron_y);
+  }
+
+  events->SetBranchAddress("InclusiveKinematicsTruth.x",&electron_x);
+  nentries = events->GetEntries();
+  for (Long64_t i=0; i< nentries;i++){
+    events->GetEntry(i);
+    h_x_truth->Fill(electron_x);
+  }
+
+
+  /////////////////////////////////////////////////////////////////////
+  // Create a canvas fot Q2 hist
+  TCanvas* c = new TCanvas("my_canvas", "My Canvas Title", 1200, 900); // Width, height
+  // Draw the histogram on the canvas:
+  h_Q2_DA->SetLineColor(kBlue);
+  h_Q2_DA->SetLineWidth(6);
+  h_Q2_DA->Draw();
+
+  h_Q2_e->SetLineColor(kBlack);
+  h_Q2_e->SetLineWidth(4);
+  h_Q2_e->Draw("SAME");
+
+  h_Q2_e_m->SetLineColor(kRed);
+  h_Q2_e_m->SetLineWidth(2);
+  h_Q2_e_m->Draw("SAME"); // Overlay on the same canvas
+
+  h_Q2_truth->SetLineColor(kGreen);
+  h_Q2_truth->SetLineWidth(2);
+  h_Q2_truth->Draw("SAME");
+
+  // Create a legend
+  TLegend *legend = new TLegend(0.7, 0.7, 0.9, 0.9);
+  legend->AddEntry(h_Q2_e, "MC: by hand", "l");
+  legend->AddEntry(h_Q2_truth, "MC: truth", "l");
+  legend->AddEntry(h_Q2_e_m, "Reco.: electron method", "l");
+  legend->AddEntry(h_Q2_DA, "DA", "l");
+
+  // Draw the legend
+  legend->Draw();
+
+  // Set axis titles on the first histogram
+  h_Q2_e->GetXaxis()->SetTitle("Q^{2}");
+  h_Q2_e->GetYaxis()->SetTitle("# of events");
+  // Optional: Adjust sizes and offsets
+  h_Q2_e->GetXaxis()->SetTitleSize(0.04);
+  h_Q2_e->GetYaxis()->SetTitleSize(0.04);
+  h_Q2_e->GetXaxis()->SetTitleOffset(1.0);
+  h_Q2_e->GetYaxis()->SetTitleOffset(1.0);
+
+  c->Update();
+
+  // Save the canvas as a JPG:
+  c->SaveAs("Q2_hist.pdf");
+
+  /////////////////////////////////////////////////////////////////////
+  // emptying the canvas for the Mandelstam t
+  c->Clear();
+  h_t_MC->SetLineColor(kBlack);
+  h_t_MC->Draw();
+
+  legend->Clear();  // Removes all entries from the existing legend
+  legend->AddEntry(h_t_MC, "MC: by hand", "l");
+  // legend->AddEntry(h_Q2_truth, "MC: truth", "l");
+  // legend->AddEntry(h_Q2_e_m, "Reco.: electron method", "l");
+  // Draw the legend
+  legend->Draw();
+  // Display the canvas
+
+  // Set axis titles on the first histogram
+  h_t_MC->GetXaxis()->SetTitle("t");
+  h_t_MC->GetYaxis()->SetTitle("# of events");
+  // Optional: Adjust sizes and offsets
+  h_t_MC->GetXaxis()->SetTitleSize(0.04);
+  h_t_MC->GetYaxis()->SetTitleSize(0.04);
+  h_t_MC->GetXaxis()->SetTitleOffset(1.0);
+  h_t_MC->GetYaxis()->SetTitleOffset(1.0);
+
+  h_tREC_B0->Draw("SAME");
+
+  legend->Clear();  // Removes all entries from the existing legend
+  // Set axis titles on the first histogram
+  legend->AddEntry(h_tREC_B0, "Reco.: B0", "l");
+  legend->AddEntry(h_t_MC, "MC: truth", "l");
+
+  c->Update();
+
+  c->SaveAs("t_hist.pdf");
+
+  /////////////////////////////////////////////////////////////////////
+  // emptying the canvas to plot the y-hist
+  c->Clear();
+  h_y_e->SetLineColor(kBlack);
+  h_y_e->SetLineWidth(4);
+  h_y_e->Draw();
+
+  h_y_DA->SetLineColor(kBlue);
+  h_y_DA->SetLineWidth(4);
+  h_y_DA->Draw("SAME");
+
+  h_y_e_m->SetLineColor(kRed);
+  h_y_e_m->SetLineWidth(2);
+  h_y_e_m->Draw("SAME");
+
+  h_y_truth->SetLineColor(kGreen);
+  h_y_truth->SetLineWidth(2);
+  h_y_truth->Draw("SAME");
+ 
+  legend->Clear();  // Removes all entries from the existing legend
+  // Set axis titles on the first histogram
+  legend->AddEntry(h_y_e    , "MC: by hand", "l");
+  legend->AddEntry(h_y_truth, "MC: truth", "l");
+  legend->AddEntry(h_y_DA   , "Reco.:DA", "l");
+  legend->AddEntry(h_y_e_m  , "Reco.: electron method", "l");
+
+  // Draw the legend
+  legend->Draw();
+
+  h_y_e->GetXaxis()->SetTitle("y");
+  h_y_e->GetYaxis()->SetTitle("# of events");
+  // Optional: Adjust sizes and offsets
+  h_y_e->GetXaxis()->SetTitleSize(0.04);
+  h_y_e->GetYaxis()->SetTitleSize(0.04);
+  h_y_e->GetXaxis()->SetTitleOffset(1.0);
+  h_y_e->GetYaxis()->SetTitleOffset(1.0);
+
+  c->Update();
+
+  c->SaveAs("y_hist.pdf");
+
+  /////////////////////////////////////////////////////////////////////
+  // emptying the canvas to plot the x-hist
+  c->Clear();
+  h_x_e->SetLineColor(kBlack);
+  h_x_e->SetLineWidth(4);
+  h_x_e->Draw();
+
+  h_x_truth->SetLineColor(kGreen);
+  h_x_truth->Draw("SAME");
+
+  h_x_e_m->SetLineColor(kRed);
+  h_x_e_m->SetLineWidth(2);
+  h_x_e_m->Draw("SAME");
+
+  legend->Clear();  // Removes all entries from the existing legend
+  // Set axis titles on the first histogram
+  legend->AddEntry(h_x_e, "MC: by hand", "l");
+  legend->AddEntry(h_x_e_m, "MC: truth", "l");
+  legend->AddEntry(h_x_truth, "Reco.: electron method", "l");
+  // Draw the legend
+  legend->Draw();
+
+  h_x_e->GetXaxis()->SetTitle("x_{Bj}");
+  h_x_e->GetYaxis()->SetTitle("# of events");
+  // Optional: Adjust sizes and offsets
+  h_x_e->GetXaxis()->SetTitleSize(0.04);
+  h_x_e->GetYaxis()->SetTitleSize(0.04);
+  h_x_e->GetXaxis()->SetTitleOffset(1.0);
+  h_x_e->GetYaxis()->SetTitleOffset(1.0);
+
+  c->SaveAs("x_hist.pdf");
+
+  /////////////////////////////////////////////////////////////////////
+
 
   return;
 }
