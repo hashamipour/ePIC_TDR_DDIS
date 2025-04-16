@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Check if two arguments are provided
-if [ $# -ne 1]; then
+if [ $# -ne 1 ]; then
   echo "Usage: $0 <list_file>"
   exit 1  # Exit with an error code
 fi
