@@ -104,7 +104,7 @@ void DDIS_TDR(TString fileList){
   TH1D* h_t_RPP    = new TH1D("t_RPP"   , ";|t|(Reco) [(GeV/c^{2})^{2}]"  , nLogBins, t_edges);
   // t resolution
   TH1D* h_PrRes_t        = new TH1D("ProtonRes_t",";t(Reco)-t(MC) [GeV^{2}]",100,-0.5,0.5);
-  TH1D* h_PrRelRes_t     = new TH1D("ProtonRelRes_t","BABE;#frac{t(Reco)-t(MC)}{t(MC)}",10,-0.2,0.2);
+  TH1D* h_PrRelRes_t     = new TH1D("ProtonRelRes_t","BABE;#frac{t_{Reco}-t_{MC}}{t_{MC}}",10,-0.2,0.2);
     // Define bin edges
     Double_t binEdges[] = {0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.5}; // Example bin edges
     Int_t nBins = sizeof(binEdges) / sizeof(Double_t) - 1; // Number of bins
@@ -113,31 +113,39 @@ void DDIS_TDR(TString fileList){
   TH2D* h_Corr_t = new TH2D("Corr_t", ";t_{MC};t_{Reco}", 100, 0, 2, 100, 0, 2);
   // Q2 resolution
   TH1D* h_Res_Q2       = new TH1D("Q2_Res",";Q^{2}(Reco)-Q^{2}(MC) [GeV^{2}]",100,-2.5,2.5);
-  TH1D* h_RelRes_Q2    = new TH1D("Q2_RelRes","electron method;#frac{Q^{2}(Reco)-Q^{2}(MC)}{Q^{2}(MC)}",200,-0.2,0.2);
-  TH1D* h_RelRes_Q2_DA = new TH1D("Q2_RelRes_DA","DA method;#frac{Q^{2}(DA)-Q^{2}(MC)}{Q^{2}(MC)}",200,-0.2,0.2);
+  TH1D* h_RelRes_Q2    = new TH1D("Q2_RelRes","electron method;#frac{Q^{2}(Reco)-Q^{2}(MC)}{Q^{2}(MC)}",20,-0.2,0.2);
+  TH1D* h_RelRes_Q2_DA = new TH1D("Q2_RelRes_DA","DA method;#frac{Q^{2}(DA)-Q^{2}(MC)}{Q^{2}(MC)}",20,-0.15,0.15);
+  TH1D* h_RelRes_Q2_JB = new TH1D("Q2_RelRes_JB","JB method;#frac{Q^{2}(JB)-Q^{2}(MC)}{Q^{2}(MC)}",20,-2,1);
   // Q2 resolution binned
-  TH2D* h_RelRes_Q2_binned = new TH2D("tRelRes_binned",";Q^{2} [GeV^{2}];#frac{t(Reco)-t(MC)}{t(MC)}",7,5,40, 100,-0.5,0.5);
+  TH2D* h_RelRes_Q2_binned    = new TH2D("tRelRes_binned",";Q^{2} [GeV^{2}];#frac{t(Reco)-t(MC)}{t(MC)}",7,5,40, 100,-0.5,0.5);
+  TH2D* h_RelRes_Q2_binned_DA = new TH2D("tRelRes_binned_DA",";Q^{2} [GeV^{2}];#frac{t(DA)-t(MC)}{t(MC)}",7,5,40, 100,-0.5,0.5);
   // Q2 correlation
-  TH2D* h_Corr_Q2    = new TH2D("Corr_Q2", ";Q^{2}_{MC};Q^{2}_{Reco}", 100, 5, 40, 100, 5, 40);
+  TH2D* h_Corr_Q2    = new TH2D("Corr_Q2", ";Q^{2}_{MC};Q^{2}_{e}", 100, 5, 40, 100, 5, 40);
   TH2D* h_Corr_Q2_DA = new TH2D("Corr_Q2_DA", ";Q^{2}_{MC};Q^{2}_{DA}", 100, 5, 40, 100, 5, 40);
+  TH2D* h_Corr_Q2_JB = new TH2D("Corr_Q2_JB", ";Q^{2}_{MC};Q^{2}_{JB}", 100, 5, 40, 100, 5, 40);
   // xBj resolution
-  TH1D* h_Res_xBj      = new TH1D("xBj_Res",";x_{Bj}(Reco)-x_{Bj}(MC)",20,-0.0002,0.0002);
-  TH1D* h_RelRes_xBj   = new TH1D("xBj_RelRes","electron method;#frac{x_{Bj}(Reco)-x_{Bj}(MC)}{x_{Bj}(MC)}",15,-0.08,0.08);
+  TH1D* h_Res_xBj       = new TH1D("xBj_Res",";x_{e}-x_{MC}",20,-0.0002,0.0002);
+  TH1D* h_RelRes_xBj    = new TH1D("xBj_RelRes","electron method;#frac{x_{e}-x_{MC}}{x_{MC}}",15,-0.08,0.08);
+  TH1D* h_RelRes_xBj_DA = new TH1D("xBj_RelRes_DA","DA method;#frac{x_{DA}-x_{MC}}{x_{MC}}",15,-0.6,0.75);
+  TH1D* h_RelRes_xBj_JB = new TH1D("xBj_RelRes_JB","JB method;#frac{x_{JB}-x_{MC}}{x_{MC}}",15,-1.,0.75);
   // xBj resolution binned
-  TH2D* h_xBjRelRes_binned = new TH2D("xBjRelRes_binned",";x_{Bj};#frac{x_{Bj}(Reco)-x_{Bj}(MC)}{x_{Bj}(MC)}",5,0.0,0.2,100,-0.5,0.5);
+  TH2D* h_xBjRelRes_binned    = new TH2D("xBjRelRes_binned",";x_{Bj};#frac{x_{Bj}(Reco)-x_{Bj}(MC)}{x_{Bj}(MC)}",5,0.0,0.2,100,-0.5,0.5);
+  TH2D* h_xBjRelRes_binned_DA = new TH2D("xBjRelRes_binned_DA",";x_{Bj};#frac{x_{Bj}(DA)-x_{Bj}(MC)}{x_{Bj}(MC)}",5,0.0,0.2,100,-0.5,0.5);
   // xBj correlation
-  TH2D* h_Corr_xBj    = new TH2D("Corr_xBj", ";#it{x}_{MC};#it{x}_{Reco}", 100, 0, 0.2, 100, 0, 0.2);
+  TH2D* h_Corr_xBj    = new TH2D("Corr_xBj", ";#it{x}_{MC};#it{x}_{e}", 100, 0, 0.2, 100, 0, 0.2);
   TH2D* h_Corr_xBj_DA = new TH2D("Corr_xBj_DA", ";#it{x}_{MC};#it{x}_{DA}", 100, 0, 0.2, 100, 0, 0.2);
+  TH2D* h_Corr_xBj_JB = new TH2D("Corr_xBj_JB", ";#it{x}_{MC};#it{x}_{JB}", 100, 0, 0.2, 100, 0, 0.2);
   // inelasticity resolution
   TH1D* h_Res_inelasticity        = new TH1D("Res_inelasticity","Inelasticity;y(Reco)-y(MC)",100,-0.05,0.05);
   TH1D* h_RelRes_inelasticity     = new TH1D("RelRes_inelasticity","electron method;#frac{y(Reco)-y(MC)}{y(MC)}",10,-0.1,0.1);
   TH1D* h_RelRes_inelasticity_DA  = new TH1D("RelRes_inelasticity_DA","DA method;#frac{y(DA)-y(MC)}{y(MC)}",10,-0.35,0.35);
-
   // inelasticity resolution binned
-  TH2D* h_inelasticityRelRes_binned = new TH2D("yRelRes_binned",";y];#frac{y(Reco)-y(MC)}{y(MC)}",10,0.,1.,10,0,1.0);
+  TH2D* h_inelasticityRelRes_binned    = new TH2D("yRelRes_binned",";y];#frac{y(Reco)-y(MC)}{y(MC)}",10,0.,1.,10,0,1.0);
+  TH2D* h_inelasticityRelRes_binned_DA = new TH2D("yRelRes_binned_DA",";y];#frac{y(DA)-y(MC)}{y(MC)}",10,0.,1.,10,0,1.0);
   // inelasticity correlation
-  TH2D* h_Corr_inelasticity    = new TH2D("Corr_y", ";#it{y}_{MC};#it{y}_{Reco}", 100, 0, 1, 100, 0, 1);
+  TH2D* h_Corr_inelasticity    = new TH2D("Corr_y", ";#it{y}_{MC};#it{y}_{e}", 100, 0, 1, 100, 0, 1);
   TH2D* h_Corr_inelasticity_DA = new TH2D("Corr_y_DA", ";#it{y}_{MC};#it{y}_{DA}", 100, 0, 1, 100, 0, 1);
+  TH2D* h_Corr_inelasticity_JB = new TH2D("Corr_y_JB", ";#it{y}_{MC};#it{y}_{JB}", 100, 0, 1, 100, 0, 1);
 
   // Photon angluar resolutions
   TH1D* h_PhotRes_theta   = new TH1D("photres_theta",";#theta_{#gamma}(Reco)-#theta_{#gamma}(MC) [rad]",600,-1.5,1.5);
@@ -161,8 +169,13 @@ void DDIS_TDR(TString fileList){
 
   // Kinematic using DA
   TH1D* h_y_DA     = new TH1D("h_y_DA","y_{DA}",20,0,1);
+  TH1D* h_y_JB     = new TH1D("h_y_JB","y_{JB}",20,0,1);
+
   TH1D* h_Q2_DA    = new TH1D("h_Q2_DA",";Q^{2}",20,0,40);
+  TH1D* h_Q2_JB    = new TH1D("h_Q2_JB",";Q^{2}",20,0,40);
+
   TH1D* h_x_DA     = new TH1D("h_x_DA",";x_{Bj}",30,0,0.20);
+  TH1D* h_x_JB     = new TH1D("h_x_JB",";x_{Bj}",30,0,0.20);
 
 
   //---------------------------------------------------------
@@ -608,7 +621,7 @@ tHeadRc1_proton->Draw("same");
 c1_proton->cd(); // No need for Divide, just use the whole canvas
 gPad->SetLogy();
 
-h_eta_MCp->SetMaximum(100 * h_eta_MCe->GetMaximum()); // Match maxima across species (if h_eta_MCe is still relevant)
+// h_eta_MCp->SetMaximum(100 * h_eta_MCe->GetMaximum()); // Match maxima across species (if h_eta_MCe is still relevant)
 h_eta_MCp->GetXaxis()->SetTitle("#eta");
 h_eta_MCp->GetXaxis()->SetTitleSize(0.06);
 h_eta_MCp->GetXaxis()->SetTitleOffset(0.8);
@@ -628,7 +641,7 @@ h_eta_MCp->SetMaximum(1000); // Set the maximum y-value (adjust as needed)
 // Set the x-axis range here:
 h_eta_MCp->GetXaxis()->SetRangeUser(4, 10); // Set the x-axis range from -5 to 5 (adjust as needed)
 
-
+h_eta_MCp->GetYaxis()->SetRangeUser(1e-1,100 * h_eta_MCp->GetMaximum()); // Set the x-axis range from -5 to 5 (adjust as needed)
 h_eta_MCp->Draw();
 h_eta_RPp->Draw("pesame");
 h_eta_RPPp->Draw("pesame");
@@ -685,6 +698,14 @@ c1_proton->SaveAs("figs/proton_eta_distribution.png"); // or .pdf, .root, etc.
         gaussianFit8->SetLineColor(kRed);
         gaussianFit8->SetLineWidth(2);
         gaussianFit8->Draw("same");
+
+        TLatex *latex = new TLatex();
+        latex->SetNDC(); // Use normalized coordinates
+        latex->SetTextSize(0.04);
+        latex->SetTextColor(kRed);
+        latex->DrawLatex(0.2, 0.8, Form("RMS = %.2f", h_PrRelRes_t->GetRMS()));
+        
+        
         gStyle->SetOptFit(111); // enables display of fit pars, errors on the pars, 3rd digit (hundreds place) Display chi2/NDF
         c8->SaveAs("figs/DDIS_tPrRelRes.png");
         c8->Close();
@@ -704,6 +725,7 @@ c1_proton->SaveAs("figs/proton_eta_distribution.png"); // or .pdf, .root, etc.
 // Declare variables to store branch data
 Float_t electron_Q2, electron_y, electron_x;
 Float_t electron_Q2_DA, electron_y_DA, electron_x_DA;
+Float_t electron_Q2_JB, electron_y_JB, electron_x_JB;
 Float_t electron_Q2_truth, electron_y_truth, electron_x_truth;
 
 // Set all branch addresses once
@@ -714,6 +736,10 @@ events->SetBranchAddress("InclusiveKinematicsElectron.x" , &electron_x);
 events->SetBranchAddress("InclusiveKinematicsDA.Q2", &electron_Q2_DA);
 events->SetBranchAddress("InclusiveKinematicsDA.y" , &electron_y_DA);
 events->SetBranchAddress("InclusiveKinematicsDA.x" , &electron_x_DA);
+
+events->SetBranchAddress("InclusiveKinematicsJB.Q2", &electron_Q2_JB);
+events->SetBranchAddress("InclusiveKinematicsJB.y" , &electron_y_JB);
+events->SetBranchAddress("InclusiveKinematicsJB.x" , &electron_x_JB);
 
 events->SetBranchAddress("InclusiveKinematicsTruth.Q2", &electron_Q2_truth);
 events->SetBranchAddress("InclusiveKinematicsTruth.y" , &electron_y_truth);
@@ -734,8 +760,11 @@ for (Long64_t i = 0; i < nentries; i++) {
 
     // Fill histograms for DA method
     h_Q2_DA->Fill(electron_Q2_DA);
+    h_Q2_JB->Fill(electron_Q2_JB);
     h_y_DA->Fill(electron_y_DA);
+    h_y_JB->Fill(electron_y_JB);
     h_x_DA->Fill(electron_x_DA);
+    h_x_JB->Fill(electron_x_JB);
 
     // Fill histograms for truth
     h_Q2_truth->Fill(electron_Q2_truth);
@@ -745,25 +774,33 @@ for (Long64_t i = 0; i < nentries; i++) {
     // Fill histograms for resolution
     h_Res_xBj->Fill(electron_x - electron_x_truth);
     h_RelRes_xBj->Fill((electron_x - electron_x_truth)/electron_x_truth);
-    // h_Corr_xBj->Fill(xBj_rec, xBj_aso);
+    h_RelRes_xBj_DA->Fill((electron_x_DA - electron_x_truth)/electron_x_truth);
+    h_RelRes_xBj_JB->Fill((electron_x_JB - electron_x_truth)/electron_x_truth);
     h_xBjRelRes_binned->Fill(electron_x_truth, (electron_x - electron_x_truth)/electron_x_truth);
+    h_xBjRelRes_binned_DA->Fill(electron_x_truth, (electron_x_DA - electron_x_truth)/electron_x_truth);
     /////////////////////////////////////////////////
     h_Res_Q2->Fill(electron_Q2 - electron_Q2_truth);
     h_RelRes_Q2->Fill((electron_Q2 - electron_Q2_truth)/electron_Q2_truth);
+    h_RelRes_Q2_DA->Fill((electron_Q2_DA - electron_Q2_truth)/electron_Q2_truth);
+    h_RelRes_Q2_JB->Fill((electron_Q2_JB - electron_Q2_truth)/electron_Q2_truth);
     h_RelRes_Q2_binned->Fill(electron_Q2_truth, (electron_Q2 - electron_Q2_truth)/electron_Q2_truth);
+    h_RelRes_Q2_binned_DA->Fill(electron_Q2_truth, (electron_Q2_DA - electron_Q2_truth)/electron_Q2_truth);
     ////////////////////////////////////////////////
     h_Res_inelasticity->Fill(electron_y - electron_y_truth);
     h_RelRes_inelasticity->Fill((electron_y - electron_y_truth)/electron_y_truth);
     h_RelRes_inelasticity_DA->Fill((electron_y_DA - electron_y_truth)/electron_y_truth);
     h_inelasticityRelRes_binned->Fill(electron_y_truth, (electron_y - electron_y_truth)/electron_y_truth);
-
+    h_inelasticityRelRes_binned_DA->Fill(electron_y_truth, (electron_y_DA - electron_y_truth)/electron_y_truth);
     // Fill correlation histograms
     h_Corr_Q2->Fill(electron_Q2_truth, electron_Q2);
     h_Corr_Q2_DA->Fill(electron_Q2_truth, electron_Q2_DA);
+    h_Corr_Q2_JB->Fill(electron_Q2_truth, electron_Q2_JB);
     h_Corr_xBj->Fill(electron_x_truth, electron_x);
     h_Corr_xBj_DA->Fill(electron_x_truth, electron_x_DA);
+    h_Corr_xBj_JB->Fill(electron_x_truth, electron_x_JB);
     h_Corr_inelasticity->Fill(electron_y_truth, electron_y);
     h_Corr_inelasticity_DA->Fill(electron_y_truth, electron_y_DA);
+    h_Corr_inelasticity_JB->Fill(electron_y_truth, electron_y_JB);
 
 }
 
@@ -781,6 +818,11 @@ for (Long64_t i = 0; i < nentries; i++) {
   h_Q2_DA->SetMarkerColor(kBlue);
   h_Q2_DA->Draw("pe");
 
+  h_Q2_JB->SetLineColor(kGreen+2);
+  h_Q2_JB->SetLineWidth(1);
+  h_Q2_JB->SetMarkerStyle(20);
+  h_Q2_JB->SetMarkerColor(kGreen+2);
+  h_Q2_JB->Draw("pesame");
 
   h_Q2_e_m->SetLineColor(kRed);
   h_Q2_e_m->SetLineWidth(1);
@@ -797,6 +839,7 @@ for (Long64_t i = 0; i < nentries; i++) {
   legend->AddEntry(h_Q2_truth, "MC: truth", "l");
   legend->AddEntry(h_Q2_e_m  , "Reco.: electron method", "pe");
   legend->AddEntry(h_Q2_DA   , "Reco. DA", "pe");
+  legend->AddEntry(h_Q2_JB   , "Reco. JB", "pe");
 
   // h_Q2_DA->GetYaxis()->SetRangeUser(0, 900);
   // Draw the legend
@@ -828,6 +871,13 @@ for (Long64_t i = 0; i < nentries; i++) {
   h_x_DA->SetMarkerColor(kBlue);
   h_x_DA->Draw("P E");
 
+  h_x_JB->SetLineColor(kGreen+2);
+  h_x_JB->SetLineWidth(1);
+  h_x_JB->SetMarkerStyle(20);
+  h_x_JB->SetMarkerColor(kGreen+2);
+  h_x_JB->Draw("P E same");
+
+
   h_x_e_m->SetLineColor(kRed);
   h_x_e_m->SetLineWidth(1);
   h_x_e_m->SetMarkerStyle(20);
@@ -843,6 +893,7 @@ for (Long64_t i = 0; i < nentries; i++) {
   // Set axis titles on the first histogram
   legend->AddEntry(h_x_truth, "MC: truth", "l");
   legend->AddEntry(h_x_DA   , "REC.: DA", "pe");
+  legend->AddEntry(h_x_JB   , "REC.: JB", "pe");
   legend->AddEntry(h_x_e_m  , "Reco.: electron method", "pe");
   // Draw the legend
   legend->Draw();
@@ -869,8 +920,12 @@ for (Long64_t i = 0; i < nentries; i++) {
   h_t_MC_old->Draw();
 
   h_t_RPP->SetLineColor(kCyan);
+  h_t_RPP->SetMarkerColor(kCyan);
+  h_t_RPP->SetMarkerStyle(20);
   h_t_RPP->Draw("peSAME");
 
+  h_t_RP->SetMarkerStyle(20);
+  h_t_RP->SetMarkerColor(kBlue);
   h_t_RP->SetLineColor(kBlue);
   h_t_RP->Draw("peSAME");
 
@@ -924,7 +979,14 @@ for (Long64_t i = 0; i < nentries; i++) {
   h_y_DA->SetLineWidth(1);
   h_y_DA->SetMarkerStyle(20);
   h_y_DA->SetMarkerColor(kBlue);
-  h_y_DA->Draw("e1p SAME");
+  h_y_DA->Draw("ep SAME");
+
+  h_y_JB->SetLineColor(kGreen+2);
+  h_y_JB->SetLineWidth(1);
+  h_y_JB->SetMarkerStyle(20);
+  h_y_JB->SetMarkerColor(kGreen+2);
+  h_y_JB->Draw("ep SAME");
+
 
   h_y_e_m->SetLineColor(kRed);
   h_y_e_m->SetLineWidth(1);
@@ -945,6 +1007,7 @@ for (Long64_t i = 0; i < nentries; i++) {
   legend_y->Draw();
   legend_y->AddEntry(h_y_truth, "MC: truth", "l");
   legend_y->AddEntry(h_y_DA   , "Reco.:DA", "pe");
+  legend_y->AddEntry(h_y_JB   , "Reco.:JB", "pe");
   legend_y->AddEntry(h_y_e_m  , "Reco.: electron method", "pe");
 
   // Draw the legend
@@ -1030,10 +1093,10 @@ for (Long64_t i = 0; i < nentries; i++) {
     h_Corr_inelasticity->Draw("COLZ"); // Draw with color palette
 
     // Create a TLatex object to draw LaTeX
-    TLatex *latex = new TLatex();
+    // TLatex *latex = new TLatex();
     latex->SetNDC();        // Use normalized coordinates (0,1)
     latex->SetTextSize(0.05); // Set text size relative to canvas
-    latex->SetTextColor(kBlack);
+    latex->SetTextColor(kRed+1);
     latex->SetTextFont(42);  // Set the font (11-61, see TFont)
     latex->DrawLatex(0.15, 0.8, "electron method");
     c12->Update();
@@ -1048,12 +1111,28 @@ for (Long64_t i = 0; i < nentries; i++) {
     // TLatex *latex = new TLatex();
     latex->SetNDC();        // Use normalized coordinates (0,1)
     latex->SetTextSize(0.05); // Set text size relative to canvas
-    latex->SetTextColor(kBlack);
+    latex->SetTextColor(kRed+1);
     latex->SetTextFont(42);  // Set the font (11-61, see TFont)
     latex->DrawLatex(0.15, 0.8, "DA method");
     c12_DA->Update();
     c12_DA->SaveAs("figs/DDIS_Inelasticity_Corr_DA.png");
     c12_DA->Close();
+    ////////////////////////////////////////////////////////////
+
+
+    // Create a canvas and draw the histogram JB method
+    TCanvas *c12_JB = new TCanvas("c12_JB", "Gaussian 2D", 800, 600);
+    h_Corr_inelasticity_JB->Draw("COLZ"); // Draw with color palette
+    // Create a TLatex object to draw LaTeX
+    // TLatex *latex = new TLatex();
+    latex->SetNDC();        // Use normalized coordinates (0,1)
+    latex->SetTextSize(0.05); // Set text size relative to canvas
+    latex->SetTextColor(kRed+1);
+    latex->SetTextFont(42);  // Set the font (11-61, see TFont)
+    latex->DrawLatex(0.15, 0.8, "JB method");
+    c12_JB->Update();
+    c12_JB->SaveAs("figs/DDIS_Inelasticity_Corr_JB.png");
+    c12_JB->Close();
     ////////////////////////////////////////////////////////////
 
 
@@ -1065,24 +1144,37 @@ for (Long64_t i = 0; i < nentries; i++) {
     // Create a TLatex object to draw LaTeX
     latex->SetNDC();        // Use normalized coordinates (0,1)
     latex->SetTextSize(0.05); // Set text size relative to canvas
-    latex->SetTextColor(kBlack);
+    latex->SetTextColor(kRed+1);
     latex->SetTextFont(42);  // Set the font (11-61, see TFont)
     latex->DrawLatex(0.15, 0.8, "electron method");
     c14->SaveAs("figs/DDIS_xBj_Corr.png");
     c14->Close();
     ////////////////////////////////////////////////////////////
 
-    // Create a canvas and draw the histogram
+    // Create a canvas and draw the histogram DA
     TCanvas *c14_DA = new TCanvas("c14_DA", "Gaussian 2D", 800, 600);
     h_Corr_xBj_DA->Draw("COLZ"); // Draw with color palette
     // Create a TLatex object to draw LaTeX
     latex->SetNDC();        // Use normalized coordinates (0,1)
     latex->SetTextSize(0.05); // Set text size relative to canvas
-    latex->SetTextColor(kBlack);
+    latex->SetTextColor(kRed+1);
     latex->SetTextFont(42);  // Set the font (11-61, see TFont)
     latex->DrawLatex(0.15, 0.8, "DA method");
     c14_DA->SaveAs("figs/DDIS_xBj_Corr_DA.png");
     c14_DA->Close();
+    ////////////////////////////////////////////////////////////
+
+    // Create a canvas and draw the histogram JB
+    TCanvas *c14_JB = new TCanvas("c14_JB", "Gaussian 2D", 800, 600);
+    h_Corr_xBj_JB->Draw("COLZ"); // Draw with color palette
+    // Create a TLatex object to draw LaTeX
+    latex->SetNDC();        // Use normalized coordinates (0,1)
+    latex->SetTextSize(0.05); // Set text size relative to canvas
+    latex->SetTextColor(kRed+1);
+    latex->SetTextFont(42);  // Set the font (11-61, see TFont)
+    latex->DrawLatex(0.15, 0.8, "JB method");
+    c14_JB->SaveAs("figs/DDIS_xBj_Corr_JB.png");
+    c14_JB->Close();
     ////////////////////////////////////////////////////////////
     
         
@@ -1093,7 +1185,7 @@ for (Long64_t i = 0; i < nentries; i++) {
     h_Corr_Q2->Draw("COLZ"); // Draw with color palette
     latex->SetNDC();        // Use normalized coordinates (0,1)
     latex->SetTextSize(0.05); // Set text size relative to canvas
-    latex->SetTextColor(kBlack);
+    latex->SetTextColor(kRed+1);
     latex->SetTextFont(42);  // Set the font (11-61, see TFont)
     latex->DrawLatex(0.15, 0.8, "electron method");
     c15->SaveAs("figs/DDIS_Q2_Corr.png");
@@ -1107,7 +1199,7 @@ for (Long64_t i = 0; i < nentries; i++) {
     h_Corr_Q2_DA->Draw("COLZ"); // Draw with color palette
     latex->SetNDC();        // Use normalized coordinates (0,1)
     latex->SetTextSize(0.05); // Set text size relative to canvas
-    latex->SetTextColor(kBlack);
+    latex->SetTextColor(kRed+1);
     latex->SetTextFont(42);  // Set the font (11-61, see TFont)
     latex->DrawLatex(0.15, 0.8, "DA method");
     c15_DA->SaveAs("figs/DDIS_Q2_Corr_DA.png");
@@ -1115,6 +1207,19 @@ for (Long64_t i = 0; i < nentries; i++) {
     ////////////////////////////////////////////////////////////
 
 
+    // Create a canvas and draw the histogram
+    TCanvas *c15_JB = new TCanvas("c15_JB", "Gaussian 2D", 800, 600);
+    // gPad->SetLogy(1);
+    // h_Corr_xBj->GetXaxis()->SetLimits(0, 0.2);
+    h_Corr_Q2_JB->Draw("COLZ"); // Draw with color palette
+    latex->SetNDC();        // Use normalized coordinates (0,1)
+    latex->SetTextSize(0.05); // Set text size relative to canvas
+    latex->SetTextColor(kRed+1);
+    latex->SetTextFont(42);  // Set the font (11-61, see TFont)
+    latex->DrawLatex(0.15, 0.8, "JB method");
+    c15_JB->SaveAs("figs/DDIS_Q2_Corr_JB.png");
+    c15_JB->Close();
+    ////////////////////////////////////////////////////////////
 
 
     // Q2 relative resulotion plot
@@ -1146,10 +1251,102 @@ for (Long64_t i = 0; i < nentries; i++) {
         gaussianFit9->SetLineColor(kRed);
         gaussianFit9->SetLineWidth(2);
         gaussianFit9->Draw("same");
+
+        // TLatex *latex = new TLatex();
+        latex->SetNDC(); // Use normalized coordinates
+        latex->SetTextSize(0.04);
+        latex->SetTextColor(kRed);
+        latex->DrawLatex(0.2, 0.8, Form("RMS = %.2f", h_RelRes_Q2->GetRMS()));
+        
+
         gStyle->SetOptFit(111); // enables display of fit pars, errors on the pars, 3rd digit (hundreds place) Display chi2/NDF
         c9->SaveAs("figs/DDIS_Q2RelRes.png");
         c9->Close();
         //////////////////////////////////////////////
+
+        // Q2 relative resulotion plot DA method
+        TCanvas* c9_DA = new TCanvas("c9_DA","",1200,800);
+        // Draw 1D plot as main figure
+        c9_DA->SetBottomMargin(0.2); // Increase bottom margin
+        h_RelRes_Q2_DA->GetXaxis()->SetTitleSize(0.05);
+        h_RelRes_Q2_DA->GetXaxis()->SetTitleOffset(1.3);
+        h_RelRes_Q2_DA->GetYaxis()->SetTitle("Counts");
+        h_RelRes_Q2_DA->GetYaxis()->SetTitleSize(0.05);
+        h_RelRes_Q2_DA->GetYaxis()->SetTitleOffset(0.9);
+        h_RelRes_Q2_DA->SetLineColor(kGreen+3);
+        h_RelRes_Q2_DA->SetMarkerColor(kGreen+3);
+        h_RelRes_Q2_DA->SetMarkerStyle(20);
+        h_RelRes_Q2_DA->Draw("pe");
+            // Fit a Gaussian to the histogram
+            xmin = -0.02;
+            xmax =  0.03;
+            TF1* gaussianFit9_DA = new TF1("gaussianFit", "gaus",xmin, xmax);
+            // Set initial parameter values
+            gaussianFit9_DA->SetParameters(1, 0, 0.1); // Amplitude, Mean, Sigma
+            // Perform the fit
+            h_RelRes_Q2_DA->Fit("gaussianFit", "RQ");
+            // Get the fit parameters
+            // double mean  = gaussianFit->GetParameter(1);
+            // double sigma = gaussianFit->GetParameter(2);
+            // double meanErr  = gaussianFit->GetParError(1);
+            // Draw the fitted function on the same canvas
+            gaussianFit9_DA->SetLineColor(kRed);
+            gaussianFit9_DA->SetLineWidth(2);
+            gaussianFit9_DA->Draw("same");
+            gStyle->SetOptFit(111); // enables display of fit pars, errors on the pars, 3rd digit (hundreds place) Display chi2/NDF
+
+              // TLatex *latex = new TLatex();
+              latex->SetNDC(); // Use normalized coordinates
+              latex->SetTextSize(0.04);
+              latex->SetTextColor(kRed);
+              latex->DrawLatex(0.2, 0.8, Form("RMS = %.2f", h_RelRes_Q2_DA->GetRMS()));
+
+            c9_DA->SaveAs("figs/DDIS_Q2RelRes_DA.png");
+            c9_DA->Close();
+            //////////////////////////////////////////////
+
+
+
+        // Q2 relative resulotion plot JB method
+        TCanvas* c9_JB = new TCanvas("c9_JB","",1200,800);
+        // Draw 1D plot as main figure
+        c9_JB->SetBottomMargin(0.2); // Increase bottom margin
+        h_RelRes_Q2_JB->GetXaxis()->SetTitleSize(0.05);
+        h_RelRes_Q2_JB->GetXaxis()->SetTitleOffset(1.3);
+        h_RelRes_Q2_JB->GetYaxis()->SetTitle("Counts");
+        h_RelRes_Q2_JB->GetYaxis()->SetTitleSize(0.05);
+        h_RelRes_Q2_JB->GetYaxis()->SetTitleOffset(0.9);
+        h_RelRes_Q2_JB->SetLineColor(kGreen+3);
+        h_RelRes_Q2_JB->SetMarkerColor(kGreen+3);
+        h_RelRes_Q2_JB->SetMarkerStyle(20);
+        h_RelRes_Q2_JB->Draw("pe");
+            // Fit a Gaussian to the histogram
+            xmin = -0.02;
+            xmax =  0.03;
+            TF1* gaussianFit9_JB = new TF1("gaussianFit_JB", "gaus",xmin, xmax);
+            // Set initial parameter values
+            gaussianFit9_JB->SetParameters(1, 0, 0.1); // Amplitude, Mean, Sigma
+            // Perform the fit
+            h_RelRes_Q2_JB->Fit("gaussianFit_JB", "RQ");
+            // Get the fit parameters
+            // double mean  = gaussianFit->GetParameter(1);
+            // double sigma = gaussianFit->GetParameter(2);
+            // double meanErr  = gaussianFit->GetParError(1);
+            // Draw the fitted function on the same canvas
+            gaussianFit9_JB->SetLineColor(kRed);
+            gaussianFit9_JB->SetLineWidth(2);
+            gaussianFit9_JB->Draw("same");
+            gStyle->SetOptFit(111); // enables display of fit pars, errors on the pars, 3rd digit (hundreds place) Display chi2/NDF
+
+              // TLatex *latex = new TLatex();
+              latex->SetNDC(); // Use normalized coordinates
+              latex->SetTextSize(0.04);
+              latex->SetTextColor(kRed);
+              latex->DrawLatex(0.2, 0.8, Form("RMS = %.2f", h_RelRes_Q2_JB->GetRMS()));
+
+            c9_JB->SaveAs("figs/DDIS_Q2RelRes_JB.png");
+            c9_JB->Close();
+            //////////////////////////////////////////////
 
 
     // xBj relative resulotion plot
@@ -1182,9 +1379,101 @@ for (Long64_t i = 0; i < nentries; i++) {
         gaussianFit10->SetLineWidth(2);
         gaussianFit10->Draw("same");
         gStyle->SetOptFit(111); // enables display of fit pars, errors on the pars, 3rd digit (hundreds place) Display chi2/NDF
+
+        // TLatex *latex = new TLatex();
+        latex->SetNDC(); // Use normalized coordinates
+        latex->SetTextSize(0.04);
+        latex->SetTextColor(kRed);
+        latex->DrawLatex(0.2, 0.8, Form("RMS = %.2f", h_RelRes_xBj->GetRMS()));
+
         c10->SaveAs("figs/DDIS_xBjRelRes.png");
         c10->Close();
         //////////////////////////////////////////////
+
+        // xBj relative resulotion plot DA method
+        TCanvas* c10_DA = new TCanvas("c10_DA","",1200,800);
+        // Draw 1D plot as main figure
+        c10_DA->SetBottomMargin(0.2); // Increase bottom margin
+        h_RelRes_xBj_DA->GetXaxis()->SetTitleSize(0.05);
+        h_RelRes_xBj_DA->GetXaxis()->SetTitleOffset(1.3);
+        h_RelRes_xBj_DA->GetYaxis()->SetTitle("Counts");
+        h_RelRes_xBj_DA->GetYaxis()->SetTitleSize(0.05);
+        h_RelRes_xBj_DA->GetYaxis()->SetTitleOffset(0.9);
+        h_RelRes_xBj_DA->SetLineColor(kGreen+3);
+        h_RelRes_xBj_DA->SetMarkerColor(kGreen+3);
+        h_RelRes_xBj_DA->SetMarkerStyle(20);
+        h_RelRes_xBj_DA->Draw("pe");
+            // Fit a Gaussian to the histogram
+            xmin = -0.2;// -0.015;
+            xmax =  0.3;//0.01;
+            TF1* gaussianFit10_DA = new TF1("gaussianFit_DA", "gaus",xmin, xmax);
+            // Set initial parameter values
+            gaussianFit10_DA->SetParameters(1000, 0, 0.1); // Amplitude, Mean, Sigma
+            // Perform the fit
+            h_RelRes_xBj_DA->Fit("gaussianFit_DA", "RQ");
+            // Get the fit parameters
+            // double mean  = gaussianFit->GetParameter(1);
+            // double sigma = gaussianFit->GetParameter(2);
+            // double meanErr  = gaussianFit->GetParError(1);
+            // Draw the fitted function on the same canvas
+            gaussianFit10_DA->SetLineColor(kRed);
+            gaussianFit10_DA->SetLineWidth(2);
+            gaussianFit10_DA->Draw("same");
+            gStyle->SetOptFit(111); // enables display of fit pars, errors on the pars, 3rd digit (hundreds place) Display chi2/NDF
+
+
+            // TLatex *latex = new TLatex();
+            latex->SetNDC(); // Use normalized coordinates
+            latex->SetTextSize(0.04);
+            latex->SetTextColor(kRed);
+            latex->DrawLatex(0.2, 0.8, Form("RMS = %.2f", h_RelRes_xBj_DA->GetRMS()));
+
+            c10_DA->SaveAs("figs/DDIS_xBjRelRes_DA.png");
+            c10_DA->Close();
+            //////////////////////////////////////////////
+
+
+
+        // xBj relative resulotion plot DA method
+        TCanvas* c10_JB = new TCanvas("c10_JB","",1200,800);
+        // Draw 1D plot as main figure
+        c10_JB->SetBottomMargin(0.2); // Increase bottom margin
+        h_RelRes_xBj_JB->GetXaxis()->SetTitleSize(0.05);
+        h_RelRes_xBj_JB->GetXaxis()->SetTitleOffset(1.3);
+        h_RelRes_xBj_JB->GetYaxis()->SetTitle("Counts");
+        h_RelRes_xBj_JB->GetYaxis()->SetTitleSize(0.05);
+        h_RelRes_xBj_JB->GetYaxis()->SetTitleOffset(0.9);
+        h_RelRes_xBj_JB->SetLineColor(kGreen+3);
+        h_RelRes_xBj_JB->SetMarkerColor(kGreen+3);
+        h_RelRes_xBj_JB->SetMarkerStyle(20);
+        h_RelRes_xBj_JB->Draw("pe");
+            // Fit a Gaussian to the histogram
+            xmin = -0.6;// -0.015;
+            xmax =  0.3;//0.01;
+            TF1* gaussianFit10_JB = new TF1("gaussianFit_JB", "gaus",xmin, xmax);
+            // Set initial parameter values
+            gaussianFit10_JB->SetParameters(1000, 0, 0.1); // Amplitude, Mean, Sigma
+            // Perform the fit
+            h_RelRes_xBj_JB->Fit("gaussianFit_JB", "RQ");
+            // Get the fit parameters
+            // double mean  = gaussianFit->GetParameter(1);
+            // double sigma = gaussianFit->GetParameter(2);
+            // double meanErr  = gaussianFit->GetParError(1);
+            // Draw the fitted function on the same canvas
+            gaussianFit10_JB->SetLineColor(kRed);
+            gaussianFit10_JB->SetLineWidth(2);
+            gaussianFit10_JB->Draw("same");
+            gStyle->SetOptFit(111); // enables display of fit pars, errors on the pars, 3rd digit (hundreds place) Display chi2/NDF
+
+            // TLatex *latex = new TLatex();
+            latex->SetNDC(); // Use normalized coordinates
+            latex->SetTextSize(0.04);
+            latex->SetTextColor(kRed);
+            latex->DrawLatex(0.2, 0.8, Form("RMS = %.2f", h_RelRes_xBj_JB->GetRMS()));
+
+            c10_JB->SaveAs("figs/DDIS_xBjRelRes_JB.png");
+            c10_JB->Close();
+            //////////////////////////////////////////////
 
 
     // xBj relative resulotion plot
@@ -1216,6 +1505,12 @@ for (Long64_t i = 0; i < nentries; i++) {
         gaussianFit11->SetLineColor(kRed);
         gaussianFit11->SetLineWidth(2);
         gaussianFit11->Draw("same");
+
+        // TLatex *latex = new TLatex();
+        latex->SetNDC(); // Use normalized coordinates
+        latex->SetTextSize(0.04);
+        latex->DrawLatex(0.2, 0.8, Form("RMS = %.2f", h_RelRes_inelasticity->GetRMS()));
+
         gStyle->SetOptFit(111); // enables display of fit pars, errors on the pars, 3rd digit (hundreds place) Display chi2/NDF
         c11->SaveAs("figs/DDIS_InelasticityRelRes.png");
         c11->Close();
@@ -1234,7 +1529,7 @@ for (Long64_t i = 0; i < nentries; i++) {
         h_RelRes_inelasticity_DA->Draw("pe");
             // Fit a Gaussian to the histogram
             xmin = -0.25;
-            xmax =  0.20;
+            xmax =  0.10;
             TF1* gaussianFit11_DA = new TF1("gaussianFit", "gaus",xmin, xmax);
             // Set initial parameter values
             gaussianFit11_DA->SetParameters(1, 0, 0.1); // Amplitude, Mean, Sigma
@@ -1248,6 +1543,12 @@ for (Long64_t i = 0; i < nentries; i++) {
             gaussianFit11_DA->SetLineColor(kRed);
             gaussianFit11_DA->SetLineWidth(2);
             gaussianFit11_DA->Draw("same");
+
+                    // TLatex *latex = new TLatex();
+              latex->SetNDC(); // Use normalized coordinates
+              latex->SetTextSize(0.04);
+              latex->SetTextColor(kRed);
+              latex->DrawLatex(0.2, 0.8, Form("RMS = %.2f", h_RelRes_inelasticity_DA->GetRMS()));
             gStyle->SetOptFit(111); // enables display of fit pars, errors on the pars, 3rd digit (hundreds place) Display chi2/NDF
             c11_DA->SaveAs("figs/DDIS_InelasticityRelRes_DA.png");
             c11_DA->Close();
@@ -1273,6 +1574,11 @@ for (Long64_t i = 0; i < nentries; i++) {
 
       double t_center = h_tRelRes_binned->GetXaxis()->GetBinCenter(j);  // Q² bin center
       double t_width  = h_tRelRes_binned->GetXaxis()->GetBinWidth(j);   // Q² bin width
+      if (j==2)
+      {
+        continue;// removing the second point
+      }
+      
 
       g->SetPoint(j-1, t_center, mean);                   // X=t center, Y=mean of t_diff
       g->SetPointError(j-1,0.0* t_width/2.0, rms);            // X error = half bin width, Y error = RMS
@@ -1281,7 +1587,7 @@ for (Long64_t i = 0; i < nentries; i++) {
     }
 
     // Style and draw
-    g->SetTitle("electron method");
+    g->SetTitle("BABE method");
     g->GetXaxis()->SetTitle("t_{MC} [GeV^{2}]");
     g->GetYaxis()->SetTitle("#frac{t_{reco} - t_{MC}}{t_{MC}}");
     g->SetMarkerStyle(20);
@@ -1312,7 +1618,7 @@ for (Long64_t i = 0; i < nentries; i++) {
     h_Corr_t->Draw("COLZ"); // Draw with color palette
     latex->SetNDC();        // Use normalized coordinates (0,1)
     latex->SetTextSize(0.05); // Set text size relative to canvas
-    latex->SetTextColor(kBlack);
+    latex->SetTextColor(kRed+1);
     latex->SetTextFont(42);  // Set the font (11-61, see TFont)
     latex->DrawLatex(0.15, 0.8, "BABE");
     c16->SaveAs("figs/DDIS_t_Corr.png");
@@ -1387,6 +1693,72 @@ for (Long64_t i = 0; i < nentries; i++) {
       ////////////////////////////////////////////////
 
 
+
+
+    // Create a canvas and draw the histogram DA
+    TCanvas* c17_DA = new TCanvas("c17_DA","",1200,800);
+    c17_DA->SetLeftMargin(0.15); // Increase left margin
+    //////////////////////////////////////////////
+    nbinsX = h_RelRes_Q2_binned_DA->GetNbinsX();
+      TGraphErrors *gQ2_DA = new TGraphErrors(nbinsX);
+  
+      for (int j = 1; j <= nbinsX; ++j) {
+        // Project X (t_reco - t_mc) for Q² bin j
+        TH1D* projY = h_RelRes_Q2_binned_DA->ProjectionY("_pyQ2", j, j);
+      
+        TF1 *gaus = new TF1("gaus", "gaus");
+        projY->Fit(gaus, "Q");  // "Q" = quiet mode, no fit output
+        
+        double mean  = gaus->GetParameter(1);      // Mean of the fit
+        double sigma = gaus->GetParameter(2);      // Sigma of the fit
+      
+        double t_center = h_RelRes_Q2_binned_DA->GetXaxis()->GetBinCenter(j);  // Q² bin center
+        double t_width  = h_RelRes_Q2_binned_DA->GetXaxis()->GetBinWidth(j);   // Q² bin width
+
+        if (t_center < 5) {
+          delete projY;
+          continue;  // Skip points below x=5
+        }
+     
+        gQ2_DA->SetPoint(j-1, t_center, mean);                   // X=t center, Y=mean of t_diff
+        gQ2_DA->SetPointError(j-1, 0.0*t_width/2.0, sigma);            // X error = half bin width, Y error = RMS
+    
+        delete projY;
+        delete gaus;
+
+      }
+    
+      // Style and draw
+      gQ2_DA->SetTitle(";Q^{2}_{MC};#frac{Q^{2}_{DA} - Q^{2}_{MC}}{Q^{2}_{MC}}");
+      gQ2_DA->SetMarkerStyle(20);
+      gQ2_DA->SetMarkerColor(kBlue+2);
+      gQ2_DA->SetLineColor(kBlue+2);
+      gQ2_DA->SetLineWidth(2);
+      gQ2_DA->GetXaxis()->SetLimits(0, 40);
+      gQ2_DA->Draw("AP");
+      ////
+      x1 = 0;
+      x2 = gQ2->GetXaxis()->GetXmax();
+      y1 = 0;
+      y2 = 0;
+      TLine *line_Q2_DA = new TLine(x1, y1,x2, y2);
+      line_Q2_DA->SetLineColor(kRed);
+      line_Q2_DA->SetLineStyle(2);  // Dashed line
+      line_Q2_DA->SetLineWidth(2);
+      line_Q2_DA->Draw();
+      ////
+      double y_min_DA = gQ2_DA->GetYaxis()->GetXmin();  // Get Y range from the graph
+      double y_max_DA = gQ2_DA->GetYaxis()->GetXmax();
+      TPave *shade_DA = new TPave(0, y_min_DA, 5, y_max_DA, 0, "br");
+      shade_DA->SetFillStyle(3004);  // Hatch pattern (e.g., 3001–3010)
+      shade_DA->SetFillColor(kGray+1);
+      shade_DA->SetLineColor(kGray+2);  // Optional border
+      shade_DA->Draw();
+      c17_DA->SaveAs("figs/DDIS_Q2RelRes_binned_DA.png");
+      c17_DA->Close();
+      ////////////////////////////////////////////////
+
+
     // Create a canvas and draw the histogram
     TCanvas* c18 = new TCanvas("c18","",1200,800);
     c18->SetLeftMargin(0.15); // Increase left margin
@@ -1435,6 +1807,57 @@ for (Long64_t i = 0; i < nentries; i++) {
       ////////////////////////////////////////////////
 
 
+
+
+    // Create a canvas and draw the histogram
+    TCanvas* c18_DA = new TCanvas("c18_DA","",1200,800);
+    c18_DA->SetLeftMargin(0.15); // Increase left margin
+    //////////////////////////////////////////////
+    nbinsX = h_xBjRelRes_binned_DA->GetNbinsX();
+      TGraphErrors *gxb_DA = new TGraphErrors(nbinsX);
+  
+      for (int j = 1; j <= nbinsX; ++j) {
+        // Project X (t_reco - t_mc) for Q² bin j
+        TH1D* projY = h_xBjRelRes_binned_DA->ProjectionY("_pyxBj", j, j);
+      
+        TF1 *gaus = new TF1("gaus", "gaus");
+        projY->Fit(gaus, "Q");  // "Q" = quiet mode, no fit output
+        
+        double mean  = gaus->GetParameter(1);      // Mean of the fit
+        double sigma = gaus->GetParameter(2);      // Sigma of the fit
+      
+        double t_center = h_xBjRelRes_binned_DA->GetXaxis()->GetBinCenter(j);  // Q² bin center
+        double t_width  = h_xBjRelRes_binned_DA->GetXaxis()->GetBinWidth(j);   // Q² bin width
+
+     
+        gxb_DA->SetPoint(j-1, t_center, mean);                   // X=t center, Y=mean of t_diff
+        gxb_DA->SetPointError(j-1,0.0* t_width/2.0, sigma);            // X error = half bin width, Y error = RMS
+    
+        delete projY;
+      }
+    
+      // Style and draw
+      gxb_DA->SetTitle(";x^{MC}_{Bj};#frac{x^{DA}_{Bj} - x^{MC}_{Bj}}{x^{MC}_{Bj}}");
+      gxb_DA->SetMarkerStyle(20);
+      gxb_DA->SetMarkerColor(kBlue+2);
+      gxb_DA->SetLineColor(kBlue+2);
+      gxb_DA->SetLineWidth(2);
+      gxb_DA->Draw("AP");
+      x1 = gxb_DA->GetXaxis()->GetXmin();
+      x2 = gxb_DA->GetXaxis()->GetXmax();
+      y1 = 0;
+      y2 = 0;
+      TLine *line_xBj_DA = new TLine(x1, y1,x2, y2);
+      line_xBj_DA->SetLineColor(kRed);
+      line_xBj_DA->SetLineStyle(2);  // Dashed line
+      line_xBj_DA->SetLineWidth(2);
+      line_xBj_DA->Draw();
+      c18_DA->SaveAs("figs/DDIS_xBjRelRes_binned_DA.png");
+      c18_DA->Close();
+      ////////////////////////////////////////////////
+
+
+
     // Create a canvas and draw the histogram
     TCanvas* c19 = new TCanvas("c19","",1200,800);
     c19->SetLeftMargin(0.15); // Increase left margin
@@ -1462,7 +1885,7 @@ for (Long64_t i = 0; i < nentries; i++) {
       }
     
       // Style and draw
-      gy->SetTitle(";y_{MC};#frac{y_{reco} - y_{MC}}{y_{MC}}");
+      gy->SetTitle(";y_{MC};#frac{y_{e} - y_{MC}}{y_{MC}}");
       gy->SetMarkerStyle(20);
       gy->SetMarkerColor(kBlue+2);
       gy->SetLineColor(kBlue+2);
@@ -1479,6 +1902,53 @@ for (Long64_t i = 0; i < nentries; i++) {
       line_y->Draw();
       c19->SaveAs("figs/DDIS_InelasticityRelRes_binned.png");
       c19->Close();
+      ////////////////////////////////////////////////
+
+
+    // Create a canvas and draw the histogram DA
+    TCanvas* c19_DA = new TCanvas("c19_DA","",1200,800);
+    c19_DA->SetLeftMargin(0.15); // Increase left margin
+    //////////////////////////////////////////////
+    nbinsX = h_inelasticityRelRes_binned_DA->GetNbinsX();
+      TGraphErrors *gy_DA = new TGraphErrors(nbinsX);
+  
+      for (int j = 1; j <= nbinsX; ++j) {
+        // Project X (t_reco - t_mc) for Q² bin j
+        TH1D* projY = h_inelasticityRelRes_binned_DA->ProjectionY("_pyY", j, j);
+      
+        TF1 *gaus = new TF1("gaus", "gaus");
+        projY->Fit(gaus, "Q");  // "Q" = quiet mode, no fit output
+        
+        double mean  = gaus->GetParameter(1);      // Mean of the fit
+        double sigma = gaus->GetParameter(2);      // Sigma of the fit
+      
+        double t_center = h_inelasticityRelRes_binned_DA->GetXaxis()->GetBinCenter(j);  // Q² bin center
+        double t_width  = h_inelasticityRelRes_binned_DA->GetXaxis()->GetBinWidth(j);   // Q² bin width
+     
+        gy_DA->SetPoint(j-1, t_center, mean);                   // X=t center, Y=mean of t_diff
+        gy_DA->SetPointError(j-1, 0.0*t_width/2.0, sigma);            // X error = half bin width, Y error = RMS
+    
+        delete projY;
+      }
+    
+      // Style and draw
+      gy_DA->SetTitle(";y_{MC};#frac{y_{DA} - y_{MC}}{y_{MC}}");
+      gy_DA->SetMarkerStyle(20);
+      gy_DA->SetMarkerColor(kBlue+2);
+      gy_DA->SetLineColor(kBlue+2);
+      gy_DA->SetLineWidth(2);
+      gy_DA->Draw("AP");
+      x1 = gy_DA->GetXaxis()->GetXmin();
+      x2 = gy_DA->GetXaxis()->GetXmax();
+      y1 = 0;
+      y2 = 0;
+      TLine *line_y_DA = new TLine(x1, y1,x2, y2);
+      line_y_DA->SetLineColor(kRed);
+      line_y_DA->SetLineStyle(2);  // Dashed line
+      line_y_DA->SetLineWidth(2);
+      line_y_DA->Draw();
+      c19_DA->SaveAs("figs/DDIS_InelasticityRelRes_binned_DA.png");
+      c19_DA->Close();
       ////////////////////////////////////////////////
 
   //---------------------------------------------------------
