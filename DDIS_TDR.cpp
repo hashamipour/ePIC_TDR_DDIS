@@ -87,7 +87,7 @@ void DDIS_TDR(TString fileList){
   double tmax = 2.0;
 
   // Define number of bins
-  const int nLogBins = 40; // you can adjust this
+  int nLogBins = 40; // you can adjust this
 
   // Log step calculation
   double logStep = TMath::Power(tmax / tmin, 1.0 / nLogBins);
@@ -158,14 +158,82 @@ void DDIS_TDR(TString fileList){
   // using the electron method
   TH1D* h_Q2_e_m   = new TH1D("h_Q2_e_m",";Q^{2}",20,0,40);
   TH1D* h_y_e_m    = new TH1D("h_y_e_m",";y_{e,MC}",20,0,1);
-  TH1D* h_x_e_m    = new TH1D("h_x_e_m",";x_{e,MC}",30,0,0.20);
-  // Kinematic MC Truth from branches 
-  TH1D* h_y_truth  = new TH1D("h_y_truth","",20,0,1);
-  TH1D* h_x_truth  = new TH1D("h_x_truth","x_{truth}",30,0,0.20);
-  TH1D* h_Q2_truth = new TH1D("h_Q2_truth","Q^2;# of events",20,0,40);
-  TH1D* h_py_truth = new TH1D("h_py_truth","Q^2",100,-2.5,2.5);
-  TH1D* h_px_truth = new TH1D("h_px_truth","Q^2",100,-2.5,2.5);
 
+  // x distributions
+  // double xmin = 2.99e-5;
+  // double xmax = 0.85;
+
+  // double x_stop = TMath::Floor(xmax *TMath::Power( 10.0,-TMath::Floor( TMath::Log10(xmax)))) * TMath::Power(10.0, TMath::Floor( TMath::Log10(xmax)));
+
+  // // Log step calculation
+  // // logStep = TMath::Power(xmax / xmin, 1.0 / nLogBins);
+
+  // // Array for bin edges
+  // std::vector<double> x_edges;
+
+  // int i = 0;
+  // x_edges.push_back(TMath::Floor(xmin *  TMath::Power(10.0,- TMath::Floor( TMath::Log10(xmin)))) * TMath::Power(10.0, TMath::Floor( TMath::Log10(xmin))));
+  // std::cout << "x_edges[0] = " << x_edges[0] << std::endl;
+  // while (x_edges.back() < x_stop) {
+  //   i++;
+  //   logStep = TMath::Power(10.0, TMath::Floor(TMath::Log10(x_edges[i-1])));
+  //   x_edges.push_back( x_edges[i-1] + logStep);    
+  // }
+
+  
+
+  // Define number of bins
+  // nLogBins = x_edges.size()-1; // you can adjust this
+
+
+    // t distributions
+    tmin = 1e-5;
+    tmax = 0.3;
+    double xmin, xmax=0;
+  
+    // Define number of bins
+    nLogBins = 40; // you can adjust this
+  
+    // Log step calculation
+    logStep = TMath::Power(tmax / tmin, 1.0 / nLogBins);
+  
+    // Array for bin edges
+    double x_edges[nLogBins + 1];
+  
+    x_edges[0] = tmin;
+    for (int i = 1; i <= nLogBins; ++i) {
+      x_edges[i] = x_edges[i-1] * logStep;
+    }
+
+  TH1D* h_x_e_m       = new TH1D("h_x_e_m",";x_{e,MC}",nLogBins, x_edges);
+  // TH1D* h_x_e_m     = new TH1D("h_x_e_m",";x_{Bj}",30,0,0.20); // xBj simple uniform binning
+  // Kinematic MC Truth from branches 
+  TH1D* h_y_truth     = new TH1D("h_y_truth","",20,0,1);
+  // TH1D* h_x_truth  = new TH1D("h_x_truth","x_{truth}",30,0,0.20);
+  TH1D* h_x_truth     = new TH1D("h_x_truth","x_{truth}",nLogBins, x_edges);
+  TH1D* h_Q2_truth    = new TH1D("h_Q2_truth","Q^2;# of events",20,0,40);
+  TH1D* h_py_truth    = new TH1D("h_py_truth","Q^2",100,-2.5,2.5);
+  TH1D* h_px_truth    = new TH1D("h_px_truth","Q^2",100,-2.5,2.5);
+
+    // t distributions
+    tmin = 1e-4;
+    tmax = 1.0;
+  
+    // Define number of bins
+    nLogBins = 40; // you can adjust this
+  
+    // Log step calculation
+    logStep = TMath::Power(tmax / tmin, 1.0 / nLogBins);
+  
+    // Array for bin edges
+    double xp_edges[nLogBins + 1];
+  
+    xp_edges[0] = tmin;
+    for (int i = 1; i <= nLogBins; ++i) {
+      xp_edges[i] = xp_edges[i-1] * logStep;
+    }
+
+  TH1D* h_xp_truth  = new TH1D("h_xPom_truth","xPom_{truth}",nLogBins, xp_edges);
 
   // Kinematic using DA
   TH1D* h_y_DA     = new TH1D("h_y_DA","y_{DA}",20,0,1);
@@ -174,8 +242,11 @@ void DDIS_TDR(TString fileList){
   TH1D* h_Q2_DA    = new TH1D("h_Q2_DA",";Q^{2}",20,0,40);
   TH1D* h_Q2_JB    = new TH1D("h_Q2_JB",";Q^{2}",20,0,40);
 
-  TH1D* h_x_DA     = new TH1D("h_x_DA",";x_{Bj}",30,0,0.20);
-  TH1D* h_x_JB     = new TH1D("h_x_JB",";x_{Bj}",30,0,0.20);
+  // TH1D* h_x_DA     = new TH1D("h_x_DA",";x_{Bj}",30,0,0.20);
+  TH1D* h_x_DA     = new TH1D("h_x_DA",";x_{Bj}",nLogBins, x_edges);
+  //  TH1D* h_x_JB     = new TH1D("h_x_JB",";x_{Bj}",30,0,0.20);
+  TH1D* h_x_JB     = new TH1D("h_x_JB",";x_{Bj}",nLogBins, x_edges);
+
 
 
   //---------------------------------------------------------
@@ -264,13 +335,14 @@ void DDIS_TDR(TString fileList){
     }
     TLorentzVector qbeam       = ebeam - scatElectronMC;
     TLorentzVector deltaProton = scatProtonMC - pbeam;
-    // double pDotq = pbeam.Dot(qbeam);
-    // double xPom  = -(deltaProton.Dot(qbeam))/(pDotq);
-    // std::cout << "xPom = " << xPom << std::endl;
+    double pDotq = pbeam.Dot(qbeam);
+    double xPom  = -(deltaProton.Dot(qbeam))/(pDotq);
+
+    
   
   
     h_t_MC_old->Fill(TMath::Abs(deltaProton.Mag2()));
-    // h_xPom_e->Fill(xPom);
+    h_xp_truth->Fill(xPom);
     ///////////////////////////////////// stuff from old code ////////////////////////////
     // Beams for each event
     P3MVector beame4_evt(0,0,0,-1);
@@ -683,8 +755,8 @@ c1_proton->SaveAs("figs/proton_eta_distribution.png"); // or .pdf, .root, etc.
     h_PrRelRes_t->SetMarkerStyle(20);
     h_PrRelRes_t->Draw("pe");
         // Fit a Gaussian to the histogram
-        double xmin = -0.1;
-        double xmax = 0.1;
+         xmin = -0.1;
+         xmax = 0.1;
         TF1* gaussianFit8 = new TF1("gaussianFit", "gaus", xmin, xmax);
         // Set initial parameter values
         gaussianFit8->SetParameters(1, 0, 0.1); // Amplitude, Mean, Sigma
@@ -860,11 +932,14 @@ for (Long64_t i = 0; i < nentries; i++) {
   c->SaveAs("figs/Q2_hist.png");
 
     /////////////////////////////////////////////////////////////////////
-  // emptying the canvas to plot the x-hist
+  // // emptying the canvas to plot the x-hist
   c->Clear();
-  gPad->SetLogy(1);
+  // gPad->SetLogy(1);
+
+  gPad->SetLogx(); // or SetLogy() or SetLogz()
 
 
+  h_x_DA->GetXaxis()->SetLimits(6e-5, 0.02); // Set the x-axis range from -5 to 5 (adjust as needed)
   h_x_DA->SetLineColor(kBlue);
   h_x_DA->SetLineWidth(1);
   h_x_DA->SetMarkerStyle(20);
@@ -878,6 +953,7 @@ for (Long64_t i = 0; i < nentries; i++) {
   h_x_JB->Draw("P E same");
 
 
+  h_x_e_m->GetXaxis()->SetLimits(6e-5, 0.02); // Set the x-axis range from -5 to 5 (adjust as needed)
   h_x_e_m->SetLineColor(kRed);
   h_x_e_m->SetLineWidth(1);
   h_x_e_m->SetMarkerStyle(20);
@@ -885,6 +961,7 @@ for (Long64_t i = 0; i < nentries; i++) {
   h_x_e_m->Draw("P E SAME");
 
 
+  h_x_truth->GetXaxis()->SetLimits(6e-5, 0.02); // Set the x-axis range from -5 to 5 (adjust as needed)
   h_x_truth->SetLineColor(kBlack);
   h_x_truth->SetLineWidth(2);
   h_x_truth->Draw("SAME");
@@ -896,7 +973,7 @@ for (Long64_t i = 0; i < nentries; i++) {
   legend->AddEntry(h_x_JB   , "REC.: JB", "pe");
   legend->AddEntry(h_x_e_m  , "Reco.: electron method", "pe");
   // Draw the legend
-  legend->Draw();
+  // legend->Draw();
 
   h_x_truth->GetXaxis()->SetTitle("x_{Bj}");
   h_x_truth->GetYaxis()->SetTitle("# of events");
@@ -909,6 +986,68 @@ for (Long64_t i = 0; i < nentries; i++) {
   c->Update();
 
   c->SaveAs("figs/x_hist.png");
+
+
+
+
+  /////
+
+// // emptying the canvas to plot the x-hist
+c->Clear();
+// gPad->SetLogy(1);
+
+gPad->SetLogx(); // or SetLogy() or SetLogz()
+
+
+// h_x_DA->GetXaxis()->SetLimits(6e-5, 0.02); // Set the x-axis range from -5 to 5 (adjust as needed)
+// h_x_DA->SetLineColor(kBlue);
+// h_x_DA->SetLineWidth(1);
+// h_x_DA->SetMarkerStyle(20);
+// h_x_DA->SetMarkerColor(kBlue);
+// h_x_DA->Draw("P E");
+
+// h_x_JB->SetLineColor(kGreen+2);
+// h_x_JB->SetLineWidth(1);
+// h_x_JB->SetMarkerStyle(20);
+// h_x_JB->SetMarkerColor(kGreen+2);
+// h_x_JB->Draw("P E same");
+
+
+// h_x_e_m->GetXaxis()->SetLimits(6e-5, 0.02); // Set the x-axis range from -5 to 5 (adjust as needed)
+// h_x_e_m->SetLineColor(kRed);
+// h_x_e_m->SetLineWidth(1);
+// h_x_e_m->SetMarkerStyle(20);
+// h_x_e_m->SetMarkerColor(kRed);
+// h_x_e_m->Draw("P E SAME");
+
+
+// h_xp_truth->GetXaxis()->SetLimits(6e-5, 0.02); // Set the x-axis range from -5 to 5 (adjust as needed)
+h_xp_truth->SetLineColor(kBlack);
+h_xp_truth->SetLineWidth(2);
+h_xp_truth->Draw();//->Draw("SAME");
+std::cout << "The histogram '" << h_xp_truth->GetName() << "' contains data ("
+<< h_xp_truth->GetEntries() << " entries)." << std::endl;
+
+legend->Clear();  // Removes all entries from the existing legend
+// Set axis titles on the first histogram
+legend->AddEntry(h_xp_truth, "MC: truth", "l");
+// legend->AddEntry(h_x_DA   , "REC.: DA", "pe");
+// legend->AddEntry(h_x_JB   , "REC.: JB", "pe");
+// legend->AddEntry(h_x_e_m  , "Reco.: electron method", "pe");
+// Draw the legend
+// legend->Draw();
+
+h_xp_truth->GetXaxis()->SetTitle("x_{Pom}");
+h_xp_truth->GetYaxis()->SetTitle("# of events");
+// Optional: Adjust sizes and offsets
+h_xp_truth->GetXaxis()->SetTitleSize(0.04);
+h_xp_truth->GetYaxis()->SetTitleSize(0.04);
+h_xp_truth->GetXaxis()->SetTitleOffset(1.0);
+h_xp_truth->GetYaxis()->SetTitleOffset(1.0);
+
+c->Update();
+
+c->SaveAs("figs/xPom_hist.png");
 
   /////////////////////////////////////////////////////////////////////
   // emptying the canvas for the Mandelstam t
